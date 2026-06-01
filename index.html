@@ -1189,6 +1189,140 @@ header.scrolled {
   border-color: var(--primary-container);
 }
 
+/* ─── CONTACT FORM ─── */
+.contact-section {
+  padding: 80px var(--margin-desktop);
+  background: var(--surface-container-low);
+  border-top: 4px solid var(--primary-container);
+  direction: rtl;
+}
+
+.contact-inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+.contact-section h2 {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 48px;
+  line-height: 48px;
+  color: var(--on-surface);
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.contact-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+}
+
+.form-group-title {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+  color: var(--primary-container);
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--outline-variant);
+}
+
+.form-field {
+  margin-bottom: 20px;
+}
+
+.form-field label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  margin-bottom: 8px;
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--surface-container);
+  border: none;
+  border-bottom: 2px solid var(--outline-variant);
+  color: var(--on-surface);
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  direction: rtl;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  border-bottom-color: var(--primary-container);
+  box-shadow: 0 2px 0 0 var(--primary-container);
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: var(--outline);
+}
+
+.form-field textarea {
+  min-height: 180px;
+  resize: vertical;
+}
+
+.submit-btn {
+  display: block;
+  width: 100%;
+  padding: 16px 40px;
+  margin-top: 12px;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+  border: none;
+  cursor: pointer;
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 24px;
+  line-height: 28px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition: background 0.3s;
+}
+
+.submit-btn:hover {
+  background: var(--secondary-container);
+}
+
+.form-success {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  border: 2px solid var(--primary-container);
+  background: var(--surface-container);
+}
+
+.form-success.visible {
+  display: block;
+}
+
+.form-success p {
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 18px;
+  line-height: 28px;
+  color: var(--on-surface);
+}
+
+@media (max-width: 900px) {
+  .contact-form { grid-template-columns: 1fr; gap: 32px; }
+}
+
 /* ─── FOOTER ─── */
 footer {
   border-top: 4px solid var(--outline);
@@ -1340,9 +1474,9 @@ footer {
 <!-- HEADER -->
 <header id="header">
   <a href="#" class="logo"><img src="images/TAP-Logo_white.png" alt="TrackAttack Pro" style="height:40px;width:auto;"></a>
-  <a href="#" class="cta-btn">&#1510;&#1512;&#1493; &#1511;&#1513;&#1512;</a>
+  <a href="#contact" class="cta-btn">&#1510;&#1512;&#1493; &#1511;&#1513;&#1512;</a>
   <div class="header-right">
-    <div class="version-badge">v3.1</div>
+    <div class="version-badge">v3.2</div>
     <div class="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </div>
@@ -1614,6 +1748,44 @@ footer {
     <div class="resource-img tech-img"></div>
   </div>
 </div>
+
+<!-- CONTACT FORM -->
+<section id="contact" class="contact-section reveal">
+  <div class="contact-inner">
+    <h2>&#1510;&#1512;&#1493; &#1511;&#1513;&#1512;</h2>
+    <form class="contact-form" id="contactForm" action="https://formsubmit.co/avi.theret@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="TrackAttack Pro - טופס יצירת קשר">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="text" name="_honey" style="display:none">
+      <div class="form-section">
+        <div class="form-group-title">&#1508;&#1512;&#1496;&#1497;&#1501; &#1488;&#1497;&#1513;&#1497;&#1497;&#1501;</div>
+        <div class="form-field">
+          <label for="name">&#1513;&#1501; &#1502;&#1500;&#1488;</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-field">
+          <label for="email">&#1488;&#1497;&#1502;&#1497;&#1497;&#1500;</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-field">
+          <label for="phone">&#1496;&#1500;&#1508;&#1493;&#1503;</label>
+          <input type="tel" id="phone" name="phone">
+        </div>
+      </div>
+      <div class="form-section">
+        <div class="form-group-title">&#1508;&#1512;&#1496;&#1497; &#1512;&#1499;&#1489;</div>
+        <div class="form-field">
+          <label for="vehicle">&#1497;&#1510;&#1512;&#1503;, &#1491;&#1490;&#1501;, &#1513;&#1504;&#1514; &#1497;&#1497;&#1510;&#1493;&#1512;, &#1492;&#1506;&#1512;&#1493;&#1514; &#1512;&#1513;&#1493;&#1514;</label>
+          <textarea id="vehicle" name="vehicle_details"></textarea>
+        </div>
+      </div>
+      <div style="grid-column:1/-1;text-align:center;">
+        <button type="submit" class="submit-btn">&#1513;&#1500;&#1495;</button>
+      </div>
+    </form>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer>
