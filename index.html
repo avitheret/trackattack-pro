@@ -55,7 +55,7 @@
   --gutter: 24px;
   --margin-desktop: 64px;
   --margin-mobile: 20px;
-  --container-max: 1440px;
+  --container-max: 1100px;
 }
 
 html { scroll-behavior: smooth; }
@@ -389,7 +389,7 @@ header.scrolled {
 }
 
 .tech-inner {
-  max-width: 1000px;
+  max-width: var(--container-max);
   margin: 0 auto;
   position: relative;
   min-height: 500px;
@@ -692,7 +692,7 @@ header.scrolled {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
-  max-width: 800px;
+  max-width: var(--container-max);
   margin: 0 auto;
   background: var(--outline-variant);
   border: 2px solid var(--outline-variant);
@@ -879,7 +879,8 @@ header.scrolled {
 /* ─── TOTAL DOMINANCE ─── */
 .dominance {
   padding: 80px var(--margin-desktop);
-  max-width: 600px;
+  max-width: var(--container-max);
+  margin: 0 auto;
   border-top: 2px solid var(--outline-variant);
 }
 
@@ -904,7 +905,7 @@ header.scrolled {
 
 /* ─── AVAILABILITY / DATA TABLE ─── */
 .availability-note {
-  max-width: 1400px;
+  max-width: var(--container-max);
   margin: 0 auto;
   padding: 20px var(--margin-desktop) 10px;
   border-top: 4px solid var(--primary-container);
@@ -928,7 +929,7 @@ header.scrolled {
 }
 
 .product-data-header {
-  max-width: 1400px;
+  max-width: var(--container-max);
   margin: 40px auto 20px;
   padding: 0 var(--margin-desktop);
   display: flex;
@@ -958,7 +959,7 @@ header.scrolled {
 }
 
 .table-container {
-  max-width: 1440px;
+  max-width: var(--container-max);
   margin: 0 auto;
   padding: 0 var(--margin-mobile) 20px;
   overflow-x: auto;
@@ -1309,7 +1310,7 @@ footer {
 <!-- HEADER -->
 <header id="header">
   <a href="#" class="logo">TRACK <span>ATTACK</span> PRO</a>
-  <div class="version-badge">v2.0</div>
+  <div class="version-badge">v2.1</div>
   <div class="hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
   </div>
