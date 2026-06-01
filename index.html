@@ -123,15 +123,45 @@ header.scrolled {
   color: var(--primary-container);
 }
 
+.cta-btn {
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--on-primary-container);
+  background: var(--primary-container);
+  padding: 10px 24px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transform: skewX(-5deg);
+  transition: background 0.3s, color 0.3s;
+}
+
+.cta-btn:hover {
+  background: var(--secondary-container);
+  color: var(--on-primary-container);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
 .version-badge {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
   line-height: 16px;
   letter-spacing: 0.1em;
   color: var(--outline);
   text-transform: uppercase;
-  padding: 4px 12px;
+  padding: 2px 8px;
   border: 1px solid var(--outline-variant);
   white-space: nowrap;
   transition: color 0.3s, border-color 0.3s;
@@ -1310,9 +1340,12 @@ footer {
 <!-- HEADER -->
 <header id="header">
   <a href="#" class="logo"><img src="images/TAP-Logo_white.png" alt="TrackAttack Pro" style="height:40px;width:auto;"></a>
-  <div class="version-badge">v3.0</div>
-  <div class="hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
+  <a href="#" class="cta-btn">&#1510;&#1512;&#1493; &#1511;&#1513;&#1512;</a>
+  <div class="header-right">
+    <div class="version-badge">v3.1</div>
+    <div class="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
   </div>
 </header>
 
