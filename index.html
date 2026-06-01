@@ -1277,6 +1277,126 @@ header.scrolled {
   resize: vertical;
 }
 
+/* Multi-select dropdown */
+.multiselect-wrapper {
+  position: relative;
+}
+
+.multiselect-trigger {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--surface-container);
+  border: none;
+  border-bottom: 2px solid var(--outline-variant);
+  color: var(--outline);
+  font-family: 'Hanken Grotesk', sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  direction: rtl;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.3s;
+}
+
+.multiselect-trigger.has-selection {
+  color: var(--on-surface);
+}
+
+.multiselect-trigger:hover,
+.multiselect-trigger.open {
+  border-bottom-color: var(--primary-container);
+}
+
+.multiselect-trigger .arrow {
+  font-size: 10px;
+  transition: transform 0.3s;
+  color: var(--outline);
+}
+
+.multiselect-trigger.open .arrow {
+  transform: rotate(180deg);
+}
+
+.multiselect-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  z-index: 20;
+  max-height: 280px;
+  overflow-y: auto;
+  background: var(--surface-container-high);
+  border: 1px solid var(--outline-variant);
+  border-top: none;
+}
+
+.multiselect-dropdown.open {
+  display: block;
+}
+
+.multiselect-dropdown label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--on-surface-variant);
+  transition: background 0.15s;
+  direction: rtl;
+  letter-spacing: 0;
+  text-transform: none;
+  margin-bottom: 0;
+}
+
+.multiselect-dropdown label:hover {
+  background: var(--surface-container-highest);
+}
+
+.multiselect-dropdown input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary-container);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.selected-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--surface-container-highest);
+  border: 1px solid var(--outline-variant);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.selected-tag .remove-tag {
+  cursor: pointer;
+  color: var(--primary-container);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.selected-tag .remove-tag:hover {
+  color: var(--primary);
+}
+
 .submit-btn {
   display: block;
   width: 100%;
@@ -1476,7 +1596,7 @@ footer {
   <a href="#" class="logo"><img src="images/TAP-Logo_white.png" alt="TrackAttack Pro" style="height:40px;width:auto;"></a>
   <a href="#contact" class="cta-btn">&#1510;&#1512;&#1493; &#1511;&#1513;&#1512;</a>
   <div class="header-right">
-    <div class="version-badge">v3.3</div>
+    <div class="version-badge">v3.4</div>
     <div class="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </div>
@@ -1788,6 +1908,18 @@ footer {
           <input type="text" id="year" name="year">
         </div>
         <div class="form-field">
+          <label>&#1488;&#1504;&#1497; &#1502;&#1506;&#1493;&#1504;&#1497;&#1497;&#1503; &#1489;&#1490;&#1491;&#1500;&#1497;&#1501;...</label>
+          <div class="multiselect-wrapper" id="tireSizeSelect">
+            <div class="multiselect-trigger" id="tireSizeTrigger">
+              <span class="trigger-text">&#1489;&#1495;&#1512;&#1493; &#1490;&#1491;&#1500;&#1497;&#1501;</span>
+              <span class="arrow">&#9660;</span>
+            </div>
+            <div class="multiselect-dropdown" id="tireSizeDropdown"></div>
+            <div class="selected-tags" id="tireSizeTags"></div>
+            <input type="hidden" name="tire_sizes" id="tireSizesHidden">
+          </div>
+        </div>
+        <div class="form-field">
           <label for="notes">&#1492;&#1506;&#1512;&#1493;&#1514; &#1512;&#1513;&#1493;&#1514;</label>
           <textarea id="notes" name="notes" style="min-height:80px;"></textarea>
         </div>
@@ -1844,6 +1976,77 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.15 });
 
 reveals.forEach(el => observer.observe(el));
+
+// Tire size multi-select
+(async function() {
+  const res = await fetch('db/tire-sizes.json');
+  const data = await res.json();
+  const dropdown = document.getElementById('tireSizeDropdown');
+  const trigger = document.getElementById('tireSizeTrigger');
+  const tagsEl = document.getElementById('tireSizeTags');
+  const hiddenInput = document.getElementById('tireSizesHidden');
+  const selected = new Set();
+
+  // Group by rim size
+  const groups = {};
+  data.items.forEach(size => {
+    const rim = size.match(/R(\d+)$/i)[1];
+    if (!groups[rim]) groups[rim] = [];
+    groups[rim].push(size);
+  });
+
+  // Build dropdown
+  Object.keys(groups).sort((a,b) => a-b).forEach(rim => {
+    const header = document.createElement('div');
+    header.style.cssText = 'padding:8px 16px;font-family:Anton;font-size:14px;color:#e31837;background:#1c1b1b;border-bottom:1px solid #5d3f3e;direction:ltr;';
+    header.textContent = rim + '"';
+    dropdown.appendChild(header);
+    groups[rim].forEach(size => {
+      const label = document.createElement('label');
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = size;
+      cb.addEventListener('change', () => {
+        if (cb.checked) selected.add(size); else selected.delete(size);
+        updateUI();
+      });
+      label.appendChild(cb);
+      label.appendChild(document.createTextNode(size));
+      dropdown.appendChild(label);
+    });
+  });
+
+  function updateUI() {
+    const arr = [...selected];
+    hiddenInput.value = arr.join(', ');
+    trigger.querySelector('.trigger-text').textContent = arr.length ? arr.length + ' גדלים נבחרו' : 'בחרו גדלים';
+    trigger.classList.toggle('has-selection', arr.length > 0);
+    tagsEl.innerHTML = '';
+    arr.forEach(size => {
+      const tag = document.createElement('span');
+      tag.className = 'selected-tag';
+      tag.innerHTML = size + ' <span class="remove-tag">×</span>';
+      tag.querySelector('.remove-tag').addEventListener('click', () => {
+        selected.delete(size);
+        dropdown.querySelector('input[value="' + size + '"]').checked = false;
+        updateUI();
+      });
+      tagsEl.appendChild(tag);
+    });
+  }
+
+  trigger.addEventListener('click', () => {
+    const isOpen = dropdown.classList.toggle('open');
+    trigger.classList.toggle('open', isOpen);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('tireSizeSelect').contains(e.target)) {
+      dropdown.classList.remove('open');
+      trigger.classList.remove('open');
+    }
+  });
+})();
 </script>
 </body>
 </html>
