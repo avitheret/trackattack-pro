@@ -72,6 +72,25 @@ header.scrolled {
   background-clip: text;
 }
 
+.version-badge {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px;
+  white-space: nowrap;
+  transition: color 0.3s, border-color 0.3s;
+}
+
+header.scrolled .version-badge {
+  color: rgba(255,255,255,0.4);
+  border-color: rgba(255,255,255,0.1);
+}
+
 .hamburger {
   display: flex;
   flex-direction: column;
@@ -1163,6 +1182,7 @@ footer {
 <!-- HEADER -->
 <header id="header">
   <a href="#" class="logo">TRACK <span>ATTACK</span> PRO</a>
+  <div class="version-badge">v1.1</div>
   <div class="hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
   </div>
