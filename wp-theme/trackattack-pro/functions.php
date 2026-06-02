@@ -147,9 +147,10 @@ function tap_html( string $field_name, string $default = '' ): void {
 /* ─────────────────────────────────────────────
    ACF FIELDS REGISTRATION
 ───────────────────────────────────────────── */
-add_action( 'acf/init', function () {
+add_action( 'init', function () {
+    if ( ! function_exists( 'acf_add_local_field_group' ) ) return;
     require_once get_template_directory() . '/inc/acf-fields.php';
-} );
+}, 20 );
 
 /* ACF sync directory */
 add_filter( 'acf/settings/save_json', function () {

@@ -6,8 +6,9 @@
 
 if ( ! function_exists( 'acf_add_local_field_group' ) ) return;
 
+// Show on any Page being edited
 $front_page_location = [[
-    [ 'param' => 'page_type', 'operator' => '==', 'value' => 'front_page' ],
+    [ 'param' => 'post_type', 'operator' => '==', 'value' => 'page' ],
 ]];
 
 /* ─────────────────────────────────────────────
