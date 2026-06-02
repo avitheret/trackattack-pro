@@ -10,14 +10,16 @@
 
 <header id="header">
   <a href="<?php echo esc_url( home_url('/') ); ?>" class="logo">
-    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/TAP-Logo_white.png"
-         alt="<?php bloginfo('name'); ?>" style="height:40px;width:auto;">
+    <?php
+    $logo_url = tap_option_img( 'opt_header_logo', 'TAP-Logo_white.png' );
+    ?>
+    <img src="<?php echo $logo_url; ?>" alt="<?php bloginfo('name'); ?>" style="height:40px;width:auto;">
   </a>
 
-  <a href="#contact" class="cta-btn">צרו קשר</a>
+  <a href="#contact" class="cta-btn"><?php echo esc_html( tap_option( 'opt_cta_text', 'צרו קשר' ) ); ?></a>
 
   <div class="header-right">
-    <div class="version-badge">v4.0</div>
+    <div class="version-badge"><?php echo esc_html( tap_option( 'opt_version', 'v4.0' ) ); ?></div>
     <div class="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </div>

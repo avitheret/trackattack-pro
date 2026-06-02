@@ -1,6 +1,7 @@
 <?php
 /**
  * Homepage template — TrackAttack Pro
+ * All editable content pulled from ACF fields (falls back to defaults if ACF inactive).
  */
 $img = get_template_directory_uri() . '/assets/images/';
 get_header();
@@ -9,76 +10,144 @@ get_header();
 <main id="content">
 
 <!-- ─── HERO ─── -->
+<?php
+$hero_bg = tap_img( 'hero_image', 'racetrack_camera_03.jpg' );
+?>
 <section class="hero">
-  <div class="hero-bg"></div>
+  <div class="hero-bg" style="background-image:url('<?php echo $hero_bg; ?>')"></div>
   <div class="hero-content">
-    <h1>Conquer. Every. Drive.</h1>
-    <p class="subtitle">Ultimate Track Day Weapon</p>
+    <h1><?php tap_e( 'hero_heading', 'Conquer. Every. Drive.' ); ?></h1>
+    <p class="subtitle"><?php tap_e( 'hero_subtitle', 'Ultimate Track Day Weapon' ); ?></p>
   </div>
 </section>
 
 <!-- ─── PRESENTED BY ─── -->
-<div class="presented-by"><p>Presented By</p></div>
+<div class="presented-by">
+  <p><?php tap_e( 'presented_by_text', 'Presented By' ); ?></p>
+</div>
 
 <!-- ─── FEATURES ─── -->
+<?php
+$features_tire = tap_img( 'features_tire_image', 'Tire-angle-lrg.png' );
+$features_list = function_exists('get_field') ? get_field('features_list') : null;
+$default_features = [
+  '<strong>UTQG 200</strong> rated <strong>Extreme Performance Summer</strong> tire',
+  'Engineered for <strong>track dominance</strong> and <strong>street performance</strong> with <strong>Hoosier Racing DNA</strong>',
+  'Addictive levels of <strong>responsiveness</strong> and <strong>handling</strong>',
+  '<strong>Unrivaled grip</strong> derived from motorsports-proven compounds',
+  '<strong>Adrenaline fueled acceleration</strong> fused with <strong>dynamic braking</strong>',
+];
+?>
 <section class="features reveal">
-  <div class="features-image"><div class="tire-render"></div></div>
+  <div class="features-image">
+    <div class="tire-render" style="background-image:url('<?php echo esc_url($features_tire); ?>')"></div>
+  </div>
   <ul class="features-list">
-    <li><div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><strong>UTQG 200</strong> rated <strong>Extreme Performance Summer</strong> tire</div></li>
-    <li><div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div>Engineered for <strong>track dominance</strong> and <strong>street performance</strong> with <strong>Hoosier Racing DNA</strong></div></li>
-    <li><div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div>Addictive levels of <strong>responsiveness</strong> and <strong>handling</strong></div></li>
-    <li><div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><strong>Unrivaled grip</strong> derived from motorsports-proven compounds</div></li>
-    <li><div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div><strong>Adrenaline fueled acceleration</strong> fused with <strong>dynamic braking</strong></div></li>
+    <?php if ( $features_list ) : foreach ( $features_list as $row ) : ?>
+      <li>
+        <div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div><?php echo wp_kses( $row['feature_text'], ['strong'=>[],'em'=>[]] ); ?></div>
+      </li>
+    <?php endforeach; else : foreach ( $default_features as $f ) : ?>
+      <li>
+        <div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div><?php echo wp_kses( $f, ['strong'=>[]] ); ?></div>
+      </li>
+    <?php endforeach; endif; ?>
   </ul>
 </section>
 
 <!-- ─── VIDEO ─── -->
-<section class="video-section">
+<?php
+$video_url = tap_field_page( 'video_url', '' );
+$video_bg  = tap_img( 'video_background', 'Tire-angle-lrg-web-no-text.jpg' );
+?>
+<section class="video-section" style="background-image:url('<?php echo esc_url($video_bg); ?>')">
   <div class="video-inner">
-    <button class="play-btn" aria-label="Play video"><svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg></button>
+    <button class="play-btn" aria-label="Play video"
+      <?php if ($video_url) echo 'data-video="' . esc_attr($video_url) . '"'; ?>>
+      <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+    </button>
     <p class="play-label">Play Video</p>
   </div>
 </section>
 
 <!-- ─── TECH CALLOUTS ─── -->
+<?php
+$callouts_acf = function_exists('get_field') ? get_field('tech_callouts') : null;
+$default_callouts = [
+  ['icon'=>'layers',   'text'=>'<strong>Extra-wide shoulder ribs</strong> maximize cornering performance'],
+  ['icon'=>'plus',     'text'=>'<strong>Featherlight construction</strong> provides peak responsiveness'],
+  ['icon'=>'clock',    'text'=>'<strong>H-DNA technology:</strong> 65+ years of Hoosier Racing DNA'],
+  ['icon'=>'grid',     'text'=>'<strong>Optimized center rib</strong> for increased braking performance'],
+  ['icon'=>'zap',      'text'=>'<strong>Motorsports derived compound</strong>'],
+];
+$callout_icons = [
+  '<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
+  '<svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg>',
+  '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2" stroke="white" fill="none"/></svg>',
+  '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="0"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
+  '<svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>',
+];
+?>
 <section class="tech-callouts reveal">
   <div class="tech-inner">
     <div class="tire-center"></div>
     <div class="callout-grid">
-      <div class="callout"><div class="callout-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div><p><strong>Extra-wide shoulder ribs</strong> maximize cornering performance</p></div>
-      <div class="callout"><div class="callout-icon"><svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="3"/></svg></div><p><strong>Featherlight construction</strong> provides peak responsiveness</p></div>
-      <div class="callout"><div class="callout-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M12 6v6l4 2" stroke="white" fill="none"/></svg></div><p><strong>H-DNA technology:</strong> 65+ years of Hoosier Racing DNA</p></div>
-      <div class="callout"><div class="callout-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="0"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div><p><strong>Optimized center rib</strong> for increased braking performance</p></div>
-      <div class="callout"><div class="callout-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div><p><strong>Motorsports derived compound</strong></p></div>
+      <?php if ( $callouts_acf ) :
+        foreach ( $callouts_acf as $i => $row ) :
+          $icon = $callout_icons[ $i % count($callout_icons) ];
+      ?>
+        <div class="callout">
+          <div class="callout-icon"><?php echo $icon; ?></div>
+          <p><?php echo wp_kses( $row['callout_text'], ['strong'=>[],'em'=>[]] ); ?></p>
+        </div>
+      <?php endforeach; else :
+        foreach ( $default_callouts as $i => $c ) : ?>
+        <div class="callout">
+          <div class="callout-icon"><?php echo $callout_icons[$i]; ?></div>
+          <p><?php echo wp_kses( $c['text'], ['strong'=>[]] ); ?></p>
+        </div>
+      <?php endforeach; endif; ?>
     </div>
   </div>
 </section>
 
 <!-- ─── GALLERY ─── -->
+<?php
+$gal_img1 = function_exists('get_field') ? get_field('gallery_image_1') : null;
+$gal_img2 = function_exists('get_field') ? get_field('gallery_image_2') : null;
+$gal_url1 = ( $gal_img1 && !empty($gal_img1['url']) ) ? esc_url($gal_img1['url']) : esc_url($img . 'TAP-2000x1000-master8.jpg');
+$gal_url2 = ( $gal_img2 && !empty($gal_img2['url']) ) ? esc_url($gal_img2['url']) : esc_url($img . 'TAP-2000x1000-master6.jpg');
+$gal_alt1 = ( $gal_img1 && !empty($gal_img1['alt']) ) ? esc_attr($gal_img1['alt']) : 'C8 Corvette front view';
+$gal_alt2 = ( $gal_img2 && !empty($gal_img2['alt']) ) ? esc_attr($gal_img2['alt']) : 'C8 Corvette rear view';
+?>
 <section class="gallery reveal">
   <div class="gallery-header">
-    <h2>For Drivers</h2>
-    <p>...brings track dominance to the street</p>
+    <h2><?php tap_e( 'gallery_title', 'For Drivers' ); ?></h2>
+    <p><?php tap_e( 'gallery_subtitle', '...brings track dominance to the street' ); ?></p>
   </div>
   <div class="gallery-grid">
-    <img class="gallery-img" src="<?php echo esc_url($img); ?>TAP-2000x1000-master8.jpg" alt="C8 Corvette front view with TrackAttack Pro tires">
-    <img class="gallery-img" src="<?php echo esc_url($img); ?>TAP-2000x1000-master6.jpg" alt="C8 Corvette rear view with TrackAttack Pro tires">
+    <img class="gallery-img" src="<?php echo $gal_url1; ?>" alt="<?php echo $gal_alt1; ?>">
+    <img class="gallery-img" src="<?php echo $gal_url2; ?>" alt="<?php echo $gal_alt2; ?>">
   </div>
 </section>
 
 <!-- ─── ABOUT ─── -->
-<section class="about-overlay">
+<?php $about_bg = tap_img( 'about_background', 'TAP-2000x1000-master6.jpg' ); ?>
+<section class="about-overlay" style="background-image:url('<?php echo $about_bg; ?>')">
   <div class="about-content reveal">
-    <h2>TrackAttack Pro</h2>
-    <p>...masters both street and track. Harnessing Hoosier&#8217;s unparalleled racing DNA, taking track dominance to the street, the TrackAttack Pro drives highly addictive performance.</p>
+    <h2><?php tap_e( 'about_title', 'TrackAttack Pro' ); ?></h2>
+    <p><?php tap_html( 'about_text', '...masters both street and track. Harnessing Hoosier&#8217;s unparalleled racing DNA, taking track dominance to the street, the TrackAttack Pro drives highly addictive performance.' ); ?></p>
   </div>
 </section>
 
 <!-- ─── CTA BANNER ─── -->
-<section class="cta-banner">
+<?php $cta_bg = tap_img( 'cta_background', 'TAP-2000x1000-master-1.jpg' ); ?>
+<section class="cta-banner" style="background-image:url('<?php echo $cta_bg; ?>')">
   <div class="cta-banner-content reveal">
-    <h2>Revolutionary extreme performance summer tire</h2>
-    <p>&#8230;awakens daily commutes, empowers epic track days &ndash; and ignites legendary journeys in between.</p>
+    <h2><?php tap_e( 'cta_heading', 'Revolutionary extreme performance summer tire' ); ?></h2>
+    <p><?php tap_html( 'cta_text', '...awakens daily commutes, empowers epic track days &ndash; and ignites legendary journeys in between.' ); ?></p>
   </div>
 </section>
 
@@ -101,12 +170,12 @@ get_header();
 
 <!-- ─── RADAR CHARTS ─── -->
 <section class="radar-section" style="background:var(--surface);position:relative;overflow:hidden;">
-  <div class="radar-grid" style="position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:var(--gutter);max-width:var(--container-max);margin:0 auto;">
-    <div class="radar-card reveal" style="position:relative;overflow:hidden;border:1px solid var(--outline-variant);background:url('<?php echo esc_url($img); ?>IMG_3706.jpg') center/cover no-repeat;">
+  <div style="position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:var(--gutter);max-width:var(--container-max);margin:0 auto;padding:80px var(--margin-desktop);">
+    <div class="radar-card reveal" style="position:relative;overflow:hidden;background:url('<?php echo esc_url($img); ?>IMG_3706.jpg') center/cover no-repeat;">
       <div style="position:absolute;inset:0;background:rgba(19,19,19,0.6);"></div>
       <img src="<?php echo esc_url($img); ?>spider1B@2x.png" alt="TrackAttack vs Extreme Contact Force" style="position:relative;z-index:1;max-width:100%;height:auto;display:block;margin:0 auto;">
     </div>
-    <div class="radar-card reveal" style="position:relative;overflow:hidden;border:1px solid var(--outline-variant);background:url('<?php echo esc_url($img); ?>IMG_4130.jpg') center/cover no-repeat;">
+    <div class="radar-card reveal" style="position:relative;overflow:hidden;background:url('<?php echo esc_url($img); ?>IMG_4130.jpg') center/cover no-repeat;">
       <div style="position:absolute;inset:0;background:rgba(19,19,19,0.6);"></div>
       <img src="<?php echo esc_url($img); ?>spider2B@2x.png" alt="TrackAttack vs Hoosier R7" style="position:relative;z-index:1;max-width:100%;height:auto;display:block;margin:0 auto;">
     </div>
@@ -114,20 +183,21 @@ get_header();
 </section>
 
 <!-- ─── H-DNA ─── -->
+<?php $hdna_img = tap_img( 'hdna_image', 'HDNA-white.png' ); ?>
 <section class="hdna-section reveal">
   <div class="hdna-image">
-    <img src="<?php echo esc_url($img); ?>HDNA-white.png" alt="H-DNA" style="max-width:280px;width:100%;height:auto;position:relative;z-index:1;">
+    <img src="<?php echo $hdna_img; ?>" alt="H-DNA" style="max-width:280px;width:100%;height:auto;position:relative;z-index:1;">
   </div>
   <div class="hdna-content">
-    <h2>Hoosier DNA</h2>
-    <p>Pushing boundaries and defying limits. H-DNA was forged from a legacy of unrivaled racing excellence and relentless performance. Ignite your passion, empower your pride and drive your success as you conquer life on and off the track.</p>
+    <h2><?php tap_e( 'hdna_title', 'Hoosier DNA' ); ?></h2>
+    <p><?php tap_html( 'hdna_text', 'Pushing boundaries and defying limits. H-DNA was forged from a legacy of unrivaled racing excellence and relentless performance. Ignite your passion, empower your pride and drive your success as you conquer life on and off the track.' ); ?></p>
   </div>
 </section>
 
 <!-- ─── TOTAL DOMINANCE ─── -->
 <section class="dominance reveal">
-  <h2>Total Dominance Plan</h2>
-  <p>Experience unmatched performance with the Total Dominance Plan, where Hoosier high-performance tires set a new standard in grip, handling, and durability. Engineered with cutting-edge technology and backed by independent testing and expert endorsements, all Hoosier tires promises superior performance on every drive. Choose the Total Dominance Plan and elevate your driving experience to the next level.</p>
+  <h2><?php tap_e( 'dominance_title', 'Total Dominance Plan' ); ?></h2>
+  <p><?php tap_html( 'dominance_text', 'Experience unmatched performance with the Total Dominance Plan, where Hoosier high-performance tires set a new standard in grip, handling, and durability. Engineered with cutting-edge technology and backed by independent testing and expert endorsements, all Hoosier tires promises superior performance on every drive.' ); ?></p>
 </section>
 
 <!-- ─── PRODUCT TABLE ─── -->
@@ -189,31 +259,48 @@ get_header();
 <p class="usdot-note">TrackAttack Pro is USDOT street legal only</p>
 
 <!-- ─── RESOURCES ─── -->
-<div class="resources-banner"><h2>TrackAttack Pro Resources</h2></div>
+<?php
+$res1_img  = tap_img( 'resource_1_image', 'tire-3-views@2x.png' );
+$res2_img  = tap_img( 'resource_2_image', 'LC3_2618.jpg' );
+$res1_file = tap_field_page( 'resource_1_file', '' );
+$res2_file = tap_field_page( 'resource_2_file', '' );
+?>
+<div class="resources-banner">
+  <h2><?php tap_e( 'resources_title', 'TrackAttack Pro Resources' ); ?></h2>
+</div>
 <div class="resources-grid">
   <div class="resource-card">
-    <div class="resource-img"></div>
+    <div class="resource-img" style="<?php if($res1_img) echo 'background-image:url(' . esc_url($res1_img) . ')'; ?>"></div>
     <div class="resource-info">
-      <h3>Detailed Product Specifications</h3>
-      <p>TrackAttack Pro detailed product specifications can be downloaded here.</p>
-      <p class="note">NOTE: All measurements are subject to change upon official size release.</p>
-      <a href="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/docs/TAP_ProductInfo.pdf" class="download-btn" target="_blank">Download</a>
+      <h3><?php tap_e( 'resource_1_title', 'Detailed Product Specifications' ); ?></h3>
+      <p><?php tap_html( 'resource_1_text', 'TrackAttack Pro detailed product specifications can be downloaded here.' ); ?></p>
+      <?php $note = tap_field_page( 'resource_1_note', 'NOTE: All measurements are subject to change upon official size release.' );
+      if ($note) : ?><p class="note"><?php echo esc_html($note); ?></p><?php endif; ?>
+      <?php if ($res1_file) : ?>
+        <a href="<?php echo esc_url($res1_file); ?>" class="download-btn" target="_blank">Download</a>
+      <?php else : ?>
+        <a href="#" class="download-btn">Download</a>
+      <?php endif; ?>
     </div>
   </div>
   <div class="resource-card">
     <div class="resource-info">
-      <h3>Tire Care and Safety Guidelines</h3>
-      <p>Trackattack Pro detailed tire care procedures, best practices and safety guidelines.</p>
-      <a href="<?php echo esc_url( get_template_directory_uri() ); ?>/assets/docs/TAP_TireCare.pdf" class="download-btn" target="_blank">Download</a>
+      <h3><?php tap_e( 'resource_2_title', 'Tire Care and Safety Guidelines' ); ?></h3>
+      <p><?php tap_html( 'resource_2_text', 'Trackattack Pro detailed tire care procedures, best practices and safety guidelines.' ); ?></p>
+      <?php if ($res2_file) : ?>
+        <a href="<?php echo esc_url($res2_file); ?>" class="download-btn" target="_blank">Download</a>
+      <?php else : ?>
+        <a href="#" class="download-btn">Download</a>
+      <?php endif; ?>
     </div>
-    <div class="resource-img tech-img"></div>
+    <div class="resource-img tech-img" style="<?php if($res2_img) echo 'background-image:url(' . esc_url($res2_img) . ')'; ?>"></div>
   </div>
 </div>
 
 <!-- ─── CONTACT FORM ─── -->
 <section id="contact" class="contact-section reveal">
   <div class="contact-inner">
-    <h2>צרו קשר</h2>
+    <h2><?php tap_e( 'contact_title', 'צרו קשר' ); ?></h2>
     <form class="contact-form" id="contactForm">
       <?php wp_nonce_field( 'tap_contact_nonce', 'tap_nonce' ); ?>
       <div class="form-section">
