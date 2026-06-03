@@ -12,12 +12,12 @@
 $front_page_id = get_option('page_on_front');
 $logo_url    = '';
 $cta_text    = 'צרו קשר';
-$version     = 'v4.0';
+$version     = 'v4.5';
 if ( $front_page_id && function_exists('get_field') ) {
     $raw_logo = get_field( 'opt_header_logo', $front_page_id );
     $logo_url = $raw_logo ? ( is_array($raw_logo) ? ($raw_logo['url'] ?? '') : $raw_logo ) : '';
     $cta_text = get_field( 'opt_cta_text', $front_page_id ) ?: 'צרו קשר';
-    $version  = get_field( 'opt_version',  $front_page_id ) ?: 'v4.0';
+    $version  = get_field( 'opt_version',  $front_page_id ) ?: 'v4.5';
 }
 if ( ! $logo_url ) {
     $logo_url = get_template_directory_uri() . '/assets/images/TAP-Logo_white.png';

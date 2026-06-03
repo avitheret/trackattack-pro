@@ -334,9 +334,9 @@ function tap_elementor_auto_setup(): void {
         update_post_meta( $page_id, '_tap_homepage', '1' );
     }
 
-    // Store Elementor data
+    // Store Elementor data — MUST be wp_slash'd or WP corrupts the JSON quotes
     $json = wp_json_encode( $sections );
-    update_post_meta( $page_id, '_elementor_data',          $json );
+    update_post_meta( $page_id, '_elementor_data',          wp_slash( $json ) );
     update_post_meta( $page_id, '_elementor_edit_mode',     'builder' );
     update_post_meta( $page_id, '_elementor_version',       '3.0.0' );
     update_post_meta( $page_id, '_elementor_template_type', 'wp-page' );
