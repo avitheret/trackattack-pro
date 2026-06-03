@@ -90,9 +90,26 @@ $img = get_template_directory_uri() . '/assets/images/';
   </div>
 </section>
 
-<!-- CINEMATIC TIRE -->
+<!-- CINEMATIC TIRE + HOTSPOTS -->
 <section class="cinematic-tire">
-  <div class="cinematic-tire-inner"><div class="tire-hero-img"></div></div>
+  <div class="night-bg"></div>
+  <div class="tire-hotspots">
+    <img class="tire-img" src="<?php echo esc_url($img); ?>Tire-angle-lrg.png" alt="TrackAttack Pro tire">
+    <?php
+    $hotspots = [
+      [ 44.6,  7.7, 'Extra-wide shoulder ribs maximize cornering performance' ],
+      [ 32.0, 24.1, 'Featherlight construction provides peak responsiveness' ],
+      [ 39.7, 36.7, 'H-DNA technology: 65+ years of Hoosier Racing DNA' ],
+      [ 27.1, 49.2, 'Optimized center rib for increased braking performance' ],
+      [ 40.7, 68.5, 'Motorsports derived compound' ],
+    ];
+    foreach ( $hotspots as $h ) : ?>
+      <div class="hotspot" style="left:<?php echo $h[0]; ?>%;top:<?php echo $h[1]; ?>%;">
+        <button class="hotspot__btn" aria-label="<?php echo esc_attr($h[2]); ?>"></button>
+        <span class="hotspot__tip"><?php echo esc_html($h[2]); ?></span>
+      </div>
+    <?php endforeach; ?>
+  </div>
 </section>
 
 <!-- SPECS SUMMARY -->

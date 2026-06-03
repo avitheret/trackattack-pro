@@ -208,12 +208,43 @@ header.scrolled { background: rgba(19,19,19,0.95); backdrop-filter: blur(10px); 
 .cta-banner h2 { font-family: 'Anton', sans-serif; font-weight: 400; font-style: italic; font-size: clamp(24px, 4vw, 48px); line-height: 1; color: var(--on-surface); text-transform: uppercase; margin-bottom: 16px; }
 .cta-banner p { font-family: 'Hanken Grotesk', sans-serif; font-size: 18px; line-height: 28px; color: var(--on-surface-variant); font-style: italic; }
 
-/* ─── CINEMATIC ─── */
-.cinematic-tire { height: 500px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: var(--surface-container-lowest); }
-.cinematic-tire::before { content: ''; position: absolute; inset: 0; background: url('assets/images/Tire-angle-lrg-web-no-text.jpg') center/cover no-repeat; opacity: 0.15; filter: grayscale(100%); }
-.cinematic-tire-inner { position: relative; z-index: 1; text-align: center; }
-.tire-hero-img { width: 350px; height: 350px; background: url('assets/images/Tire-angle-lrg.png') center/contain no-repeat; margin: 0 auto; filter: drop-shadow(0 0 60px rgba(227,24,55,0.3)); animation: floatTire 4s ease-in-out infinite; }
-@keyframes floatTire { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+/* ─── CINEMATIC + HOTSPOTS ─── */
+.cinematic-tire { position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: var(--surface-container-lowest); padding: 40px var(--margin-mobile); }
+.cinematic-tire .night-bg { position: absolute; inset: 0; background: url('assets/images/Tire-angle-lrg-web-no-text.jpg') center/cover no-repeat; z-index: 0; }
+.tire-hotspots { position: relative; z-index: 1; width: 1100px; max-width: 100%; aspect-ratio: 1100 / 900; }
+.tire-hotspots .tire-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 60px rgba(227,24,55,0.3)); animation: floatTire 4s ease-in-out infinite; }
+@keyframes floatTire { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+.hotspot { position: absolute; transform: translate(-50%, -50%); z-index: 2; }
+.hotspot__btn {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--on-surface); border: 2px solid var(--primary-container);
+  cursor: pointer; position: relative; display: block; padding: 0;
+}
+.hotspot__btn::before {
+  content: ''; position: absolute; inset: -7px; border-radius: 50%;
+  border: 2px solid var(--primary-container);
+  animation: hsBeat 1.8s ease-out infinite;
+}
+@keyframes hsBeat { 0% { transform: scale(0.55); opacity: 0.9; } 100% { transform: scale(1.7); opacity: 0; } }
+
+.hotspot__tip {
+  position: absolute; bottom: 150%; left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  width: 210px; max-width: 60vw; padding: 10px 14px;
+  background: var(--primary-container); color: var(--on-primary-container);
+  font-family: 'Hanken Grotesk', sans-serif; font-size: 14px; line-height: 1.4;
+  text-align: center; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease; z-index: 5;
+}
+.hotspot__tip::after {
+  content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border: 7px solid transparent; border-top-color: var(--primary-container);
+}
+.hotspot:hover .hotspot__tip, .hotspot:focus-within .hotspot__tip {
+  opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
+}
 
 /* ─── SPECS SUMMARY ─── */
 .specs-summary { position: relative; padding: 60px var(--margin-desktop); background: var(--surface-container-lowest); color: var(--on-surface); overflow: hidden; border-top: 2px solid var(--outline-variant); border-bottom: 2px solid var(--outline-variant); }

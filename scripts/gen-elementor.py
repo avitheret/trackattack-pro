@@ -241,15 +241,42 @@ content.append(section(
     min_h=440, content_pos="middle", border_top=RED,
 ))
 
-# 9. CINEMATIC
-cine = ('<div style="position:absolute;inset:0;background:url(\''+BASE+'Tire-angle-lrg-web-no-text.jpg\') center/cover;'
-        'opacity:.15;filter:grayscale(100%);"></div>'
-        '<style>@keyframes ftf{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}</style>'
-        '<div style="position:relative;z-index:1;text-align:center;"><img src="'+BASE+'Tire-angle-lrg.png" '
-        'style="max-width:350px;width:80vw;filter:drop-shadow(0 0 60px rgba(227,24,55,.3));animation:ftf 4s ease-in-out infinite;"></div>')
+# 9. CINEMATIC + HOTSPOTS
+hotspots = [
+    (44.6,  7.7, "Extra-wide shoulder ribs maximize cornering performance"),
+    (32.0, 24.1, "Featherlight construction provides peak responsiveness"),
+    (39.7, 36.7, "H-DNA technology: 65+ years of Hoosier Racing DNA"),
+    (27.1, 49.2, "Optimized center rib for increased braking performance"),
+    (40.7, 68.5, "Motorsports derived compound"),
+]
+dots = ""
+for lx, ty, tx in hotspots:
+    dots += (f'<div class="tap-hs" style="left:{lx}%;top:{ty}%;">'
+             f'<button class="tap-hs-btn" aria-label="{html.escape(tx)}"></button>'
+             f'<span class="tap-hs-tip">{html.escape(tx)}</span></div>')
+cine = ('<style>'
+        '@keyframes tapftf{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}'
+        '@keyframes taphsb{0%{transform:scale(.55);opacity:.9}100%{transform:scale(1.7);opacity:0}}'
+        '.tap-cine{position:relative;width:1100px;max-width:100%;margin:0 auto;aspect-ratio:1100/900;}'
+        '.tap-cine .nb{position:absolute;inset:0;background:url(\''+BASE+'Tire-angle-lrg-web-no-text.jpg\') center/cover;z-index:0;}'
+        '.tap-cine .ti{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:1;'
+        'filter:drop-shadow(0 0 60px rgba(227,24,55,.3));animation:tapftf 4s ease-in-out infinite;}'
+        '.tap-hs{position:absolute;transform:translate(-50%,-50%);z-index:2;}'
+        '.tap-hs-btn{width:16px;height:16px;border-radius:50%;background:'+ONS+';border:2px solid '+RED+';cursor:pointer;position:relative;display:block;padding:0;}'
+        '.tap-hs-btn::before{content:"";position:absolute;inset:-7px;border-radius:50%;border:2px solid '+RED+';animation:taphsb 1.8s ease-out infinite;}'
+        '.tap-hs-tip{position:absolute;bottom:150%;left:50%;transform:translateX(-50%) translateY(8px);width:210px;max-width:60vw;'
+        'padding:10px 14px;background:'+RED+';color:#fffaf9;font-family:\'Hanken Grotesk\',sans-serif;font-size:14px;line-height:1.4;'
+        'text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.4);opacity:0;visibility:hidden;pointer-events:none;'
+        'transition:opacity .25s,transform .25s;z-index:5;}'
+        '.tap-hs-tip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:'+RED+';}'
+        '.tap-hs:hover .tap-hs-tip{opacity:1;visibility:visible;transform:translateX(-50%) translateY(0);}'
+        '</style>'
+        '<div class="tap-cine"><div class="nb"></div>'
+        '<img class="ti" src="'+BASE+'Tire-angle-lrg.png" alt="TrackAttack Pro tire">'
+        + dots + '</div>')
 content.append(section(
     [column([htmlw(cine)], align="center")],
-    bg_color=LOWEST, min_h=460, content_pos="middle", pad=(0,0,0,0),
+    bg_color=LOWEST, content_pos="middle", pad=(40,20,40,20),
 ))
 
 # 10. SPECS
