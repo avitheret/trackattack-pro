@@ -9,7 +9,60 @@ add_action( 'after_setup_theme', function () {
     add_theme_support( 'title-tag' );
     add_theme_support( 'post-thumbnails' );
     add_theme_support( 'html5', [ 'search-form', 'comment-form', 'gallery', 'caption' ] );
-    add_theme_support( 'elementor' ); // Elementor support
+    add_theme_support( 'custom-logo' );
+} );
+
+/* ─── Editable-content helpers (read from Customizer) ─── */
+
+/** Echo an editable text value (Customizer → default). Allows <strong>/<em>/<br>. */
+function tap_text( string $id, string $default = '' ): void {
+    $val = get_theme_mod( $id, $default );
+    echo wp_kses( $val, [ 'strong' => [], 'em' => [], 'br' => [] ] );
+}
+
+/** Return a raw editable text value (for attributes). */
+function tap_text_raw( string $id, string $default = '' ): string {
+    return (string) get_theme_mod( $id, $default );
+}
+
+/** Return an editable image URL (Customizer → theme asset fallback). */
+function tap_image( string $id, string $fallback_file = '' ): string {
+    $val = get_theme_mod( $id, '' );
+    if ( $val ) return esc_url( $val );
+    return $fallback_file
+        ? esc_url( get_template_directory_uri() . '/assets/images/' . $fallback_file )
+        : '';
+}
+
+/* ─── Customizer controls ─── */
+require_once get_template_directory() . '/inc/customizer.php';
+
+/* ─── Auto-create & assign the homepage on activation ─── */
+add_action( 'after_switch_theme', function () {
+    // Find or create the homepage
+    $existing = get_posts( [
+        'post_type'   => 'page',
+        'post_status' => 'publish',
+        'meta_key'    => '_tap_homepage',
+        'meta_value'  => '1',
+        'numberposts' => 1,
+    ] );
+    if ( $existing ) {
+        $page_id = $existing[0]->ID;
+    } else {
+        $page_id = wp_insert_post( [
+            'post_title'  => 'TrackAttack Pro',
+            'post_status' => 'publish',
+            'post_type'   => 'page',
+        ] );
+        if ( $page_id && ! is_wp_error( $page_id ) ) {
+            update_post_meta( $page_id, '_tap_homepage', '1' );
+        }
+    }
+    if ( $page_id && ! is_wp_error( $page_id ) ) {
+        update_option( 'show_on_front', 'page' );
+        update_option( 'page_on_front', $page_id );
+    }
 } );
 
 /* ─── Enqueue Styles & Scripts ─── */
@@ -89,27 +142,14 @@ function tap_contact_handler(): void {
         : wp_send_json_error( 'שגיאה בשליחת הטופס.' );
 }
 
-/* ─── Elementor auto-setup (runs once on theme activation) ─── */
-require_once get_template_directory() . '/inc/elementor-setup.php';
-
-/* ─── Admin: re-run setup button ─── */
+/* ─── Admin hint: where to edit ─── */
 add_action( 'admin_notices', function () {
-    if ( ! current_user_can( 'manage_options' ) ) return;
-    if ( ! class_exists( '\Elementor\Plugin' ) ) {
-        echo '<div class="notice notice-warning"><p>'
-           . '<strong>TrackAttack Pro:</strong> Please install and activate the free <a href="'
-           . esc_url( admin_url( 'plugin-install.php?s=elementor&tab=search&type=term' ) )
-           . '">Elementor</a> plugin, then <a href="' . esc_url( admin_url( '?tap_reset_setup=1' ) ) . '">click here to rebuild the homepage</a>.'
+    if ( ! current_user_can( 'edit_theme_options' ) ) return;
+    $screen = get_current_screen();
+    if ( $screen && $screen->id === 'dashboard' ) {
+        echo '<div class="notice notice-info"><p>'
+           . '<strong>TrackAttack Pro:</strong> Edit all page text and images at '
+           . '<a href="' . esc_url( admin_url( 'customize.php' ) ) . '">Appearance → Customize → TrackAttack Pro</a> (live preview).'
            . '</p></div>';
-    }
-} );
-
-// Allow re-running setup via ?tap_reset_setup=1
-add_action( 'admin_init', function () {
-    if ( isset( $_GET['tap_reset_setup'] ) && current_user_can( 'manage_options' ) ) {
-        delete_option( 'tap_elementor_setup_done' );
-        tap_elementor_auto_setup();
-        wp_redirect( admin_url() );
-        exit;
     }
 } );

@@ -1,162 +1,127 @@
 <?php
 /**
- * TrackAttack Pro — WordPress Customizer
- * No plugins required. Appearance → Customize to edit everything.
+ * TrackAttack Pro — Customizer
+ * Native WordPress. No plugins. Appearance → Customize → TrackAttack Pro.
+ * Editable: all headlines, body text, and images. Live preview enabled.
  */
 
-add_action( 'customize_register', 'tap_customizer_register' );
+add_action( 'customize_register', function ( WP_Customize_Manager $wp ) {
 
-function tap_customizer_register( WP_Customize_Manager $c ): void {
+    $panel = 'tap_panel';
+    $wp->add_panel( $panel, [
+        'title'       => '🏁 TrackAttack Pro',
+        'description' => 'Edit page text and images. Changes preview live.',
+        'priority'    => 1,
+    ] );
 
-    /* ── helpers ── */
-    $txt = function ( $id, $label, $section, $default = '', $type = 'text' ) use ( $c ) {
-        $c->add_setting( $id, [
+    /* text/textarea control */
+    $txt = function ( $id, $label, $section, $default = '', $textarea = false ) use ( $wp ) {
+        $wp->add_setting( $id, [
             'default'           => $default,
             'sanitize_callback' => 'wp_kses_post',
             'transport'         => 'refresh',
         ] );
-        $c->add_control( $id, [ 'label' => $label, 'section' => $section, 'type' => $type ] );
+        $wp->add_control( $id, [
+            'label'   => $label,
+            'section' => $section,
+            'type'    => $textarea ? 'textarea' : 'text',
+        ] );
     };
 
-    $img = function ( $id, $label, $section ) use ( $c ) {
-        $c->add_setting( $id, [
+    /* image control */
+    $img = function ( $id, $label, $section ) use ( $wp ) {
+        $wp->add_setting( $id, [
             'default'           => '',
             'sanitize_callback' => 'esc_url_raw',
             'transport'         => 'refresh',
         ] );
-        $c->add_control( new WP_Customize_Image_Control( $c, $id, [
+        $wp->add_control( new WP_Customize_Image_Control( $wp, $id, [
             'label'   => $label,
             'section' => $section,
         ] ) );
     };
 
-    /* ── panel ── */
-    $c->add_panel( 'tap', [
-        'title'    => 'TrackAttack Pro',
-        'priority' => 5,
-    ] );
+    $sec = function ( $id, $title, $priority ) use ( $wp, $panel ) {
+        $wp->add_section( $id, [ 'title' => $title, 'panel' => $panel, 'priority' => $priority ] );
+    };
 
-    /* ─────────────────────────────────────────
-       1. HERO
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_hero', [ 'title' => '🏁 Hero', 'panel' => 'tap', 'priority' => 10 ] );
-    $txt( 'tap_hero_heading',    'Heading',               'tap_hero', 'Conquer. Every. Drive.' );
-    $txt( 'tap_hero_subtitle',   'Subtitle',              'tap_hero', 'Ultimate Track Day Weapon' );
-    $img( 'tap_hero_image',      'Background Image',      'tap_hero' );
-    $txt( 'tap_presented_by',    '"Presented By" Text',   'tap_hero', 'Presented By' );
+    /* 1. HERO */
+    $sec( 'tap_s_hero', '🏁 Hero', 10 );
+    $txt( 'tap_hero_heading',  'Heading',          'tap_s_hero', 'Conquer. Every. Drive.' );
+    $txt( 'tap_hero_subtitle', 'Subtitle',         'tap_s_hero', 'Ultimate Track Day Weapon' );
+    $img( 'tap_hero_image',    'Background Image', 'tap_s_hero' );
+    $txt( 'tap_presented_by',  '"Presented By"',   'tap_s_hero', 'Presented By' );
 
-    /* ─────────────────────────────────────────
-       2. FEATURES
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_features', [ 'title' => '✅ Features', 'panel' => 'tap', 'priority' => 20 ] );
-    $img( 'tap_feat_img', 'Tire Product Image', 'tap_features' );
-    $feat_defaults = [
-        1 => '<strong>UTQG 200</strong> rated <strong>Extreme Performance Summer</strong> tire',
-        2 => 'Engineered for <strong>track dominance</strong> and <strong>street performance</strong> with <strong>Hoosier Racing DNA</strong>',
-        3 => 'Addictive levels of <strong>responsiveness</strong> and <strong>handling</strong>',
-        4 => '<strong>Unrivaled grip</strong> derived from motorsports-proven compounds',
-        5 => '<strong>Adrenaline fueled acceleration</strong> fused with <strong>dynamic braking</strong>',
+    /* 2. FEATURES */
+    $sec( 'tap_s_feat', '✅ Features', 20 );
+    $img( 'tap_feat_img', 'Tire Image', 'tap_s_feat' );
+    $fd = [
+        'UTQG 200 rated Extreme Performance Summer tire',
+        'Engineered for track dominance and street performance with Hoosier Racing DNA',
+        'Addictive levels of responsiveness and handling',
+        'Unrivaled grip derived from motorsports-proven compounds',
+        'Adrenaline fueled acceleration fused with dynamic braking',
     ];
     for ( $i = 1; $i <= 5; $i++ ) {
-        $txt( "tap_feature_{$i}", "Feature {$i} (supports <strong>bold</strong>)", 'tap_features', $feat_defaults[$i], 'textarea' );
+        $txt( "tap_feature_{$i}", "Feature {$i} (use <strong>…</strong> for bold)", 'tap_s_feat', $fd[ $i - 1 ], true );
     }
 
-    /* ─────────────────────────────────────────
-       3. VIDEO
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_video', [ 'title' => '▶️ Video', 'panel' => 'tap', 'priority' => 30 ] );
-    $txt( 'tap_video_url', 'Video URL (YouTube / Vimeo)', 'tap_video', '' );
-    $img( 'tap_video_bg',  'Background Image',            'tap_video' );
+    /* 3. GALLERY */
+    $sec( 'tap_s_gal', '🚗 Gallery', 30 );
+    $txt( 'tap_gallery_title',    'Title',    'tap_s_gal', 'For Drivers' );
+    $txt( 'tap_gallery_subtitle', 'Subtitle', 'tap_s_gal', '...brings track dominance to the street' );
+    $img( 'tap_gallery_img1',     'Image 1',  'tap_s_gal' );
+    $img( 'tap_gallery_img2',     'Image 2',  'tap_s_gal' );
 
-    /* ─────────────────────────────────────────
-       4. TECH CALLOUTS
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_callouts', [ 'title' => '⚙️ Tech Callouts', 'panel' => 'tap', 'priority' => 40 ] );
-    $callout_defaults = [
-        1 => '<strong>Extra-wide shoulder ribs</strong> maximize cornering performance',
-        2 => '<strong>Featherlight construction</strong> provides peak responsiveness',
-        3 => '<strong>H-DNA technology:</strong> 65+ years of Hoosier Racing DNA',
-        4 => '<strong>Optimized center rib</strong> for increased braking performance',
-        5 => '<strong>Motorsports derived compound</strong>',
-    ];
-    for ( $i = 1; $i <= 5; $i++ ) {
-        $txt( "tap_callout_{$i}", "Callout {$i}", 'tap_callouts', $callout_defaults[$i], 'textarea' );
-    }
+    /* 4. ABOUT */
+    $sec( 'tap_s_about', '📖 About', 40 );
+    $txt( 'tap_about_title', 'Title',            'tap_s_about', 'TrackAttack Pro' );
+    $txt( 'tap_about_text',  'Body Text',        'tap_s_about', "...masters both street and track. Harnessing Hoosier's unparalleled racing DNA, taking track dominance to the street, the TrackAttack Pro drives highly addictive performance.", true );
+    $img( 'tap_about_bg',    'Background Image', 'tap_s_about' );
 
-    /* ─────────────────────────────────────────
-       5. GALLERY
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_gallery', [ 'title' => '🚗 Gallery', 'panel' => 'tap', 'priority' => 50 ] );
-    $txt( 'tap_gal_title',    'Section Title', 'tap_gallery', 'For Drivers' );
-    $txt( 'tap_gal_subtitle', 'Subtitle',      'tap_gallery', '...brings track dominance to the street' );
-    $img( 'tap_gal_img1',     'Image 1',       'tap_gallery' );
-    $img( 'tap_gal_img2',     'Image 2',       'tap_gallery' );
+    /* 5. CTA BANNER */
+    $sec( 'tap_s_cta', '📣 CTA Banner', 50 );
+    $txt( 'tap_cta_heading', 'Heading',          'tap_s_cta', 'Revolutionary extreme performance summer tire' );
+    $txt( 'tap_cta_text',    'Body Text',        'tap_s_cta', '...awakens daily commutes, empowers epic track days – and ignites legendary journeys in between.', true );
+    $img( 'tap_cta_bg',      'Background Image', 'tap_s_cta' );
 
-    /* ─────────────────────────────────────────
-       6. ABOUT
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_about', [ 'title' => '📖 About', 'panel' => 'tap', 'priority' => 60 ] );
-    $txt( 'tap_about_title', 'Title',            'tap_about', 'TrackAttack Pro' );
-    $txt( 'tap_about_text',  'Body Text',        'tap_about', "...masters both street and track. Harnessing Hoosier's unparalleled racing DNA, taking track dominance to the street, the TrackAttack Pro drives highly addictive performance.", 'textarea' );
-    $img( 'tap_about_bg',    'Background Image', 'tap_about' );
+    /* 6. H-DNA */
+    $sec( 'tap_s_hdna', '🧬 Hoosier DNA', 60 );
+    $txt( 'tap_hdna_title', 'Title',     'tap_s_hdna', 'Hoosier DNA' );
+    $txt( 'tap_hdna_text',  'Body Text', 'tap_s_hdna', 'Pushing boundaries and defying limits. H-DNA was forged from a legacy of unrivaled racing excellence and relentless performance. Ignite your passion, empower your pride and drive your success as you conquer life on and off the track.', true );
+    $img( 'tap_hdna_image', 'Image',     'tap_s_hdna' );
 
-    /* ─────────────────────────────────────────
-       7. CTA BANNER
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_cta', [ 'title' => '📣 CTA Banner', 'panel' => 'tap', 'priority' => 70 ] );
-    $txt( 'tap_cta_heading', 'Heading',         'tap_cta', 'Revolutionary extreme performance summer tire' );
-    $txt( 'tap_cta_text',    'Body Text',       'tap_cta', '...awakens daily commutes, empowers epic track days – and ignites legendary journeys in between.', 'textarea' );
-    $img( 'tap_cta_bg',      'Background Image','tap_cta' );
+    /* 7. TOTAL DOMINANCE */
+    $sec( 'tap_s_dom', '🏆 Total Dominance', 70 );
+    $txt( 'tap_dom_title', 'Title',     'tap_s_dom', 'Total Dominance Plan' );
+    $txt( 'tap_dom_text',  'Body Text', 'tap_s_dom', 'Experience unmatched performance with the Total Dominance Plan, where Hoosier high-performance tires set a new standard in grip, handling, and durability. Engineered with cutting-edge technology and backed by independent testing and expert endorsements, all Hoosier tires promises superior performance on every drive. Choose the Total Dominance Plan and elevate your driving experience to the next level.', true );
 
-    /* ─────────────────────────────────────────
-       8. H-DNA
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_hdna', [ 'title' => '🧬 Hoosier DNA', 'panel' => 'tap', 'priority' => 80 ] );
-    $txt( 'tap_hdna_title', 'Title',     'tap_hdna', 'Hoosier DNA' );
-    $txt( 'tap_hdna_text',  'Body Text', 'tap_hdna', 'Pushing boundaries and defying limits. H-DNA was forged from a legacy of unrivaled racing excellence and relentless performance. Ignite your passion, empower your pride and drive your success as you conquer life on and off the track.', 'textarea' );
-    $img( 'tap_hdna_image', 'H-DNA Image','tap_hdna' );
+    /* 8. RESOURCES */
+    $sec( 'tap_s_res', '📥 Resources', 80 );
+    $txt( 'tap_res_banner', 'Banner Title',        'tap_s_res', 'TrackAttack Pro Resources' );
+    $txt( 'tap_res1_title', 'Card 1 — Title',      'tap_s_res', 'Detailed Product Specifications' );
+    $txt( 'tap_res1_text',  'Card 1 — Text',       'tap_s_res', 'TrackAttack Pro detailed product specifications can be downloaded here.', true );
+    $txt( 'tap_res1_note',  'Card 1 — Note',       'tap_s_res', 'NOTE: All measurements are subject to change upon official size release.' );
+    $txt( 'tap_res1_url',   'Card 1 — Download URL','tap_s_res', '' );
+    $img( 'tap_res1_img',   'Card 1 — Image',      'tap_s_res' );
+    $txt( 'tap_res2_title', 'Card 2 — Title',      'tap_s_res', 'Tire Care and Safety Guidelines' );
+    $txt( 'tap_res2_text',  'Card 2 — Text',       'tap_s_res', 'Trackattack Pro detailed tire care procedures, best practices and safety guidelines.', true );
+    $txt( 'tap_res2_url',   'Card 2 — Download URL','tap_s_res', '' );
+    $img( 'tap_res2_img',   'Card 2 — Image',      'tap_s_res' );
 
-    /* ─────────────────────────────────────────
-       9. TOTAL DOMINANCE
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_dominance', [ 'title' => '🏆 Total Dominance', 'panel' => 'tap', 'priority' => 90 ] );
-    $txt( 'tap_dom_title', 'Title',     'tap_dominance', 'Total Dominance Plan' );
-    $txt( 'tap_dom_text',  'Body Text', 'tap_dominance', 'Experience unmatched performance with the Total Dominance Plan, where Hoosier high-performance tires set a new standard in grip, handling, and durability. Engineered with cutting-edge technology and backed by independent testing and expert endorsements, all Hoosier tires promises superior performance on every drive.', 'textarea' );
+    /* 9. CONTACT */
+    $sec( 'tap_s_contact', '✉️ Contact Form', 90 );
+    $txt( 'tap_contact_title', 'Section Title (Hebrew)', 'tap_s_contact', 'צרו קשר' );
+    $txt( 'tap_contact_email', 'Recipient Email',        'tap_s_contact', 'avi.theret@gmail.com' );
 
-    /* ─────────────────────────────────────────
-       10. RESOURCES
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_resources', [ 'title' => '📥 Resources', 'panel' => 'tap', 'priority' => 100 ] );
-    $txt( 'tap_res_title',  'Banner Title',       'tap_resources', 'TrackAttack Pro Resources' );
-    $txt( 'tap_res1_title', 'Resource 1 — Title', 'tap_resources', 'Detailed Product Specifications' );
-    $txt( 'tap_res1_text',  'Resource 1 — Text',  'tap_resources', 'TrackAttack Pro detailed product specifications can be downloaded here.', 'textarea' );
-    $txt( 'tap_res1_note',  'Resource 1 — Note',  'tap_resources', 'NOTE: All measurements are subject to change upon official size release.' );
-    $txt( 'tap_res1_url',   'Resource 1 — PDF URL','tap_resources', '' );
-    $img( 'tap_res1_img',   'Resource 1 — Image', 'tap_resources' );
-    $txt( 'tap_res2_title', 'Resource 2 — Title', 'tap_resources', 'Tire Care and Safety Guidelines' );
-    $txt( 'tap_res2_text',  'Resource 2 — Text',  'tap_resources', 'Trackattack Pro detailed tire care procedures, best practices and safety guidelines.', 'textarea' );
-    $txt( 'tap_res2_url',   'Resource 2 — PDF URL','tap_resources', '' );
-    $img( 'tap_res2_img',   'Resource 2 — Image', 'tap_resources' );
-
-    /* ─────────────────────────────────────────
-       11. CONTACT FORM
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_contact', [ 'title' => '✉️ Contact Form', 'panel' => 'tap', 'priority' => 110 ] );
-    $txt( 'tap_contact_title',   'Section Title',   'tap_contact', 'צרו קשר' );
-    $txt( 'tap_contact_email',   'Recipient Email', 'tap_contact', 'avi.theret@gmail.com' );
-    $txt( 'tap_contact_subject', 'Email Subject',   'tap_contact', 'TrackAttack Pro — טופס יצירת קשר' );
-    $txt( 'tap_contact_success', 'Success Message', 'tap_contact', 'הטופס נשלח בהצלחה! נחזור אליך בהקדם.' );
-
-    /* ─────────────────────────────────────────
-       12. GLOBAL — HEADER / FOOTER
-    ───────────────────────────────────────── */
-    $c->add_section( 'tap_global', [ 'title' => '🌐 Header & Footer', 'panel' => 'tap', 'priority' => 120 ] );
-    $txt( 'tap_cta_btn_text', 'Header CTA Button Text', 'tap_global', 'צרו קשר' );
-    $txt( 'tap_version',      'Version Badge',          'tap_global', 'v4.0' );
-    $img( 'tap_header_logo',  'Header Logo',            'tap_global' );
-    $img( 'tap_footer_logo',  'Footer Logo',            'tap_global' );
-    $txt( 'tap_copyright',    'Footer Copyright',       'tap_global', '© Copyright Hoosier Racing Tire 2024' );
-    $txt( 'tap_fb_url',       'Facebook URL',           'tap_global', 'https://www.facebook.com/hoosiertire/' );
-    $txt( 'tap_ig_url',       'Instagram URL',          'tap_global', 'https://www.instagram.com/HoosierTire/' );
-    $txt( 'tap_yt_url',       'YouTube URL',            'tap_global', 'https://www.youtube.com/c/HoosierTire' );
-}
+    /* 10. HEADER & FOOTER */
+    $sec( 'tap_s_global', '🌐 Header & Footer', 100 );
+    $img( 'tap_header_logo', 'Header Logo',    'tap_s_global' );
+    $txt( 'tap_cta_btn',     'Header CTA Text','tap_s_global', 'צרו קשר' );
+    $txt( 'tap_version',     'Version Badge',  'tap_s_global', 'v5.0' );
+    $img( 'tap_footer_logo', 'Footer Logo',    'tap_s_global' );
+    $txt( 'tap_copyright',   'Footer Copyright','tap_s_global', '© Copyright Hoosier Racing Tire ' . date('Y') );
+    $txt( 'tap_fb',          'Facebook URL',   'tap_s_global', 'https://www.facebook.com/hoosiertire/' );
+    $txt( 'tap_ig',          'Instagram URL',  'tap_s_global', 'https://www.instagram.com/HoosierTire/' );
+    $txt( 'tap_yt',          'YouTube URL',    'tap_s_global', 'https://www.youtube.com/c/HoosierTire' );
+} );
