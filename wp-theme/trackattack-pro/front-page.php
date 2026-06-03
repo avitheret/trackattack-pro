@@ -29,31 +29,28 @@ $hero_bg = tap_img( 'hero_image', 'racetrack_camera_03.jpg' );
 <!-- ─── FEATURES ─── -->
 <?php
 $features_tire = tap_img( 'features_tire_image', 'Tire-angle-lrg.png' );
-$features_list = function_exists('get_field') ? get_field('features_list') : null;
-$default_features = [
+$feature_defaults = [
   '<strong>UTQG 200</strong> rated <strong>Extreme Performance Summer</strong> tire',
   'Engineered for <strong>track dominance</strong> and <strong>street performance</strong> with <strong>Hoosier Racing DNA</strong>',
   'Addictive levels of <strong>responsiveness</strong> and <strong>handling</strong>',
   '<strong>Unrivaled grip</strong> derived from motorsports-proven compounds',
   '<strong>Adrenaline fueled acceleration</strong> fused with <strong>dynamic braking</strong>',
 ];
+$allowed = ['strong'=>[],'em'=>[],'br'=>[]];
 ?>
 <section class="features reveal">
   <div class="features-image">
     <div class="tire-render" style="background-image:url('<?php echo esc_url($features_tire); ?>')"></div>
   </div>
   <ul class="features-list">
-    <?php if ( $features_list ) : foreach ( $features_list as $row ) : ?>
+    <?php for ( $i = 1; $i <= 5; $i++ ) :
+      $txt = tap_field_page( "feature_{$i}", $feature_defaults[$i-1] );
+      if ( ! trim($txt) ) continue; ?>
       <li>
         <div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div><?php echo wp_kses( $row['feature_text'], ['strong'=>[],'em'=>[]] ); ?></div>
+        <div><?php echo wp_kses( $txt, $allowed ); ?></div>
       </li>
-    <?php endforeach; else : foreach ( $default_features as $f ) : ?>
-      <li>
-        <div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <div><?php echo wp_kses( $f, ['strong'=>[]] ); ?></div>
-      </li>
-    <?php endforeach; endif; ?>
+    <?php endfor; ?>
   </ul>
 </section>
 
@@ -74,13 +71,12 @@ $video_bg  = tap_img( 'video_background', 'Tire-angle-lrg-web-no-text.jpg' );
 
 <!-- ─── TECH CALLOUTS ─── -->
 <?php
-$callouts_acf = function_exists('get_field') ? get_field('tech_callouts') : null;
-$default_callouts = [
-  ['icon'=>'layers',   'text'=>'<strong>Extra-wide shoulder ribs</strong> maximize cornering performance'],
-  ['icon'=>'plus',     'text'=>'<strong>Featherlight construction</strong> provides peak responsiveness'],
-  ['icon'=>'clock',    'text'=>'<strong>H-DNA technology:</strong> 65+ years of Hoosier Racing DNA'],
-  ['icon'=>'grid',     'text'=>'<strong>Optimized center rib</strong> for increased braking performance'],
-  ['icon'=>'zap',      'text'=>'<strong>Motorsports derived compound</strong>'],
+$callout_defaults = [
+  '<strong>Extra-wide shoulder ribs</strong> maximize cornering performance',
+  '<strong>Featherlight construction</strong> provides peak responsiveness',
+  '<strong>H-DNA technology:</strong> 65+ years of Hoosier Racing DNA',
+  '<strong>Optimized center rib</strong> for increased braking performance',
+  '<strong>Motorsports derived compound</strong>',
 ];
 $callout_icons = [
   '<svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
@@ -94,21 +90,14 @@ $callout_icons = [
   <div class="tech-inner">
     <div class="tire-center"></div>
     <div class="callout-grid">
-      <?php if ( $callouts_acf ) :
-        foreach ( $callouts_acf as $i => $row ) :
-          $icon = $callout_icons[ $i % count($callout_icons) ];
-      ?>
+      <?php for ( $i = 1; $i <= 5; $i++ ) :
+        $txt = tap_field_page( "callout_{$i}", $callout_defaults[$i-1] );
+        if ( ! trim($txt) ) continue; ?>
         <div class="callout">
-          <div class="callout-icon"><?php echo $icon; ?></div>
-          <p><?php echo wp_kses( $row['callout_text'], ['strong'=>[],'em'=>[]] ); ?></p>
+          <div class="callout-icon"><?php echo $callout_icons[$i-1]; ?></div>
+          <p><?php echo wp_kses( $txt, ['strong'=>[],'em'=>[]] ); ?></p>
         </div>
-      <?php endforeach; else :
-        foreach ( $default_callouts as $i => $c ) : ?>
-        <div class="callout">
-          <div class="callout-icon"><?php echo $callout_icons[$i]; ?></div>
-          <p><?php echo wp_kses( $c['text'], ['strong'=>[]] ); ?></p>
-        </div>
-      <?php endforeach; endif; ?>
+      <?php endfor; ?>
     </div>
   </div>
 </section>

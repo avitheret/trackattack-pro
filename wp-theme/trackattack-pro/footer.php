@@ -1,13 +1,29 @@
+<?php
+// Read global settings from the front page
+$front_page_id = get_option('page_on_front');
+$footer_logo = '';
+$copyright   = '© Copyright Hoosier Racing Tire ' . date('Y');
+$fb = 'https://www.facebook.com/hoosiertire/';
+$ig = 'https://www.instagram.com/HoosierTire/';
+$yt = 'https://www.youtube.com/c/HoosierTire';
+if ( $front_page_id && function_exists('get_field') ) {
+    $raw = get_field( 'opt_footer_logo', $front_page_id );
+    $footer_logo = $raw ? ( is_array($raw) ? ($raw['url'] ?? '') : $raw ) : '';
+    $copyright   = get_field( 'opt_copyright',         $front_page_id ) ?: $copyright;
+    $fb          = get_field( 'opt_social_facebook',   $front_page_id ) ?: $fb;
+    $ig          = get_field( 'opt_social_instagram',  $front_page_id ) ?: $ig;
+    $yt          = get_field( 'opt_social_youtube',    $front_page_id ) ?: $yt;
+}
+if ( ! $footer_logo ) {
+    $footer_logo = get_template_directory_uri() . '/assets/images/Horizontal-logo-3to1-on-white-or-light-gray.png';
+}
+?>
 <footer>
   <div class="footer-inner">
     <a href="<?php echo esc_url( home_url('/') ); ?>" class="footer-logo">
-      <?php $footer_logo = tap_option_img( 'opt_footer_logo', 'Horizontal-logo-3to1-on-white-or-light-gray.png' ); ?>
-      <img src="<?php echo $footer_logo; ?>" alt="Hoosier" style="height:40px;width:auto;opacity:0.7;">
+      <img src="<?php echo esc_url($footer_logo); ?>" alt="Hoosier" style="height:40px;width:auto;opacity:0.7;">
     </a>
     <div class="social-icons">
-      <?php $fb = tap_option( 'opt_social_facebook', 'https://www.facebook.com/hoosiertire/' ); ?>
-      <?php $ig = tap_option( 'opt_social_instagram', 'https://www.instagram.com/HoosierTire/' ); ?>
-      <?php $yt = tap_option( 'opt_social_youtube',  'https://www.youtube.com/c/HoosierTire' ); ?>
       <a href="<?php echo esc_url($fb); ?>" target="_blank" rel="noopener" aria-label="Facebook">
         <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
       </a>
@@ -20,7 +36,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <p><?php echo esc_html( tap_option( 'opt_copyright', '© Copyright Hoosier Racing Tire ' . date('Y') ) ); ?></p>
+    <p><?php echo esc_html( $copyright ); ?></p>
     <div class="footer-links">
       <a href="<?php echo esc_url( home_url('/terms-conditions/') ); ?>">Terms &amp; conditions</a>
       <a href="<?php echo esc_url( home_url('/cookies/') ); ?>">Cookies</a>
