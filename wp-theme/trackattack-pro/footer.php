@@ -1,3 +1,10 @@
+<?php
+/*
+ * Render an Elementor Pro Theme Builder "Footer" template if assigned;
+ * otherwise the theme default below.
+ */
+if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_location( 'footer' ) ) :
+?>
 <footer>
   <div class="footer-inner">
     <a href="<?php echo esc_url( home_url('/') ); ?>" class="footer-logo">
@@ -23,6 +30,7 @@
     </div>
   </div>
 </footer>
+<?php endif; ?>
 <?php wp_footer(); ?>
 </body>
 </html>

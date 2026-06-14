@@ -13,6 +13,11 @@ add_action( 'after_setup_theme', function () {
     add_theme_support( 'elementor' );
 } );
 
+/* ─── Elementor Pro Theme Builder: register header/footer/etc. locations ─── */
+add_action( 'elementor/theme/register_locations', function ( $manager ) {
+    $manager->register_all_core_location();
+} );
+
 /* ─── Editable-content helpers (read from Customizer) ─── */
 
 /** Echo an editable text value (Customizer → default). Allows <strong>/<em>/<br>. */
