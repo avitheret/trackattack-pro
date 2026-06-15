@@ -151,6 +151,43 @@ function tap_contact_handler(): void {
         : wp_send_json_error( 'שגיאה בשליחת הטופס.' );
 }
 
+/* ─── Auto-reply to Elementor Pro form submitter (with early-bird prices) ─── */
+add_action( 'elementor_pro/forms/new_record', function ( $record, $handler ) {
+    // Only our contact form
+    $form_name = $record->get_form_settings( 'form_name' );
+    if ( $form_name !== 'TrackAttack Pro — צור קשר' ) return;
+
+    $fields = $record->get( 'fields' );
+    $name   = trim( $fields['name']['value']  ?? '' );
+    $email  = trim( $fields['email']['value'] ?? '' );
+    $sizes  = $fields['tire_sizes']['value']  ?? '';   // checkbox: comma/newline separated
+    if ( ! is_email( $email ) ) return;
+
+    $prices = require get_template_directory() . '/inc/launch-prices.php'; // size => early-bird price
+
+    $selected = preg_split( '/\s*[,\n]\s*/', (string) $sizes, -1, PREG_SPLIT_NO_EMPTY );
+    $lines = [];
+    foreach ( $selected as $s ) {
+        $s = trim( $s );
+        if ( $s === '' ) continue;
+        $p = $prices[ $s ] ?? null;
+        $lines[] = $p !== null ? "{$s} — ₪" . number_format( $p ) : "{$s} — TBC";
+    }
+    $price_block = $lines ? implode( "\n", $lines ) : '—';
+
+    $body  = "Dear {$name},\n\n";
+    $body .= "Thank you for contacting us. The prices for the tyres you are interested in are:\n\n";
+    $body .= "For early birds:\n{$price_block}\n\n";
+    $body .= "Regards,\nPitStop";
+
+    wp_mail(
+        $email,
+        'PitStop — Your Tyre Prices',
+        $body,
+        [ 'Content-Type: text/plain; charset=UTF-8' ]
+    );
+}, 10, 2 );
+
 /* ─── Admin hint: where to edit ─── */
 add_action( 'admin_notices', function () {
     if ( ! current_user_can( 'edit_theme_options' ) ) return;
