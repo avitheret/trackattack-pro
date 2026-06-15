@@ -3,7 +3,7 @@ Theme Name:  TrackAttack Pro
 Theme URI:   https://trackattack-pro.netlify.app
 Author:      Hoosier Racing Tire
 Description: Official TrackAttack Pro landing page theme — Velocity Performance design system.
-Version:     2.2.0
+Version:     2.3.0
 License:     GNU General Public License v2 or later
 Text Domain: trackattack-pro
 */
@@ -387,3 +387,44 @@ footer { border-top: 4px solid var(--outline); padding: 50px var(--margin-deskto
 .tap-rtl-form, .tap-rtl-form .elementor-form, .tap-rtl-form .elementor-field-group { direction: rtl; text-align: right; }
 .tap-rtl-form .elementor-field { direction: rtl; }
 .tap-rtl-form .elementor-button { font-family: 'Anton', sans-serif; font-style: italic; text-transform: uppercase; }
+
+/* ─── Elementor Pro form — match the dark Velocity design ─── */
+.tap-rtl-form .elementor-field-group > label,
+.tap-rtl-form .elementor-field-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--secondary); margin-bottom: 8px;
+}
+.tap-rtl-form .elementor-field-group .elementor-field-required-indicator { color: var(--primary-container); }
+.tap-rtl-form .elementor-field.elementor-field-textual,
+.tap-rtl-form .elementor-field-textual,
+.tap-rtl-form select.elementor-field,
+.tap-rtl-form textarea.elementor-field {
+  background: var(--surface-container) !important;
+  color: var(--on-surface) !important;
+  border: none !important;
+  border-bottom: 2px solid var(--outline-variant) !important;
+  border-radius: 0 !important;
+  font-family: 'Hanken Grotesk', sans-serif; font-size: 16px; padding: 12px 16px;
+  box-shadow: none !important; direction: rtl;
+}
+.tap-rtl-form .elementor-field.elementor-field-textual:focus,
+.tap-rtl-form select.elementor-field:focus,
+.tap-rtl-form textarea.elementor-field:focus {
+  border-bottom-color: var(--primary-container) !important;
+  box-shadow: 0 2px 0 0 var(--primary-container) !important; outline: none;
+}
+.tap-rtl-form .elementor-field::placeholder,
+.tap-rtl-form textarea.elementor-field::placeholder { color: var(--outline); }
+.tap-rtl-form select.elementor-field option { background: var(--surface-container); color: var(--on-surface); }
+.tap-rtl-form select[multiple].elementor-field { min-height: 140px; }
+.tap-rtl-form select[multiple].elementor-field option:checked {
+  background: var(--primary-container) linear-gradient(0deg, var(--primary-container), var(--primary-container));
+  color: #fff;
+}
+.tap-rtl-form .elementor-button {
+  background: var(--primary-container) !important; color: var(--on-primary-container) !important;
+  font-family: 'Anton', sans-serif !important; font-style: italic; font-size: 22px;
+  text-transform: uppercase; border-radius: 0 !important; padding: 16px 40px;
+}
+.tap-rtl-form .elementor-button:hover { background: var(--secondary-container) !important; }
+.tap-rtl-form .elementor-field-group { margin-bottom: 6px; }
