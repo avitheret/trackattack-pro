@@ -11,6 +11,9 @@ add_action( 'after_setup_theme', function () {
     add_theme_support( 'html5', [ 'search-form', 'comment-form', 'gallery', 'caption' ] );
     add_theme_support( 'custom-logo' );
     add_theme_support( 'elementor' );
+    register_nav_menus( [
+        'main' => 'Main Menu',
+    ] );
 } );
 
 /* ─── Elementor Pro Theme Builder: register header/footer/etc. locations ─── */

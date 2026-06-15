@@ -118,7 +118,7 @@ add_action( 'customize_register', function ( WP_Customize_Manager $wp ) {
     $sec( 'tap_s_global', '🌐 Header & Footer', 100 );
     $img( 'tap_header_logo', 'Header Logo',    'tap_s_global' );
     $txt( 'tap_cta_btn',     'Header CTA Text','tap_s_global', 'צרו קשר' );
-    $txt( 'tap_version',     'Version Badge',  'tap_s_global', 'v5.6' );
+    $txt( 'tap_version',     'Version Badge',  'tap_s_global', 'v5.7' );
     $img( 'tap_footer_logo', 'Footer Logo',    'tap_s_global' );
     $txt( 'tap_copyright',   'Footer Copyright','tap_s_global', '© Copyright Hoosier Racing Tire ' . date('Y') );
     $txt( 'tap_fb',          'Facebook URL',   'tap_s_global', 'https://www.facebook.com/hoosiertire/' );
