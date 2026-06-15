@@ -22,7 +22,7 @@ if ( ! function_exists( 'elementor_theme_do_location' ) || ! elementor_theme_do_
   </a>
   <a href="#contact" class="cta-btn"><?php tap_text('tap_cta_btn','צרו קשר'); ?></a>
   <div class="header-right">
-    <div class="version-badge"><?php tap_text('tap_version','v5.5'); ?></div>
+    <div class="version-badge"><?php tap_text('tap_version','v5.6'); ?></div>
     <div class="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </div>
