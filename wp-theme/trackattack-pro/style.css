@@ -3,7 +3,7 @@ Theme Name:  TrackAttack Pro
 Theme URI:   https://trackattack-pro.netlify.app
 Author:      Hoosier Racing Tire
 Description: Official TrackAttack Pro landing page theme — Velocity Performance design system.
-Version:     2.1.0
+Version:     2.2.0
 License:     GNU General Public License v2 or later
 Text Domain: trackattack-pro
 */
@@ -382,3 +382,8 @@ footer { border-top: 4px solid var(--outline); padding: 50px var(--margin-deskto
   .callout-grid { grid-template-columns: 1fr; }
   .about-content { padding: 40px var(--margin-mobile); }
 }
+
+/* ─── Elementor Pro contact form (RTL) ─── */
+.tap-rtl-form, .tap-rtl-form .elementor-form, .tap-rtl-form .elementor-field-group { direction: rtl; text-align: right; }
+.tap-rtl-form .elementor-field { direction: rtl; }
+.tap-rtl-form .elementor-button { font-family: 'Anton', sans-serif; font-style: italic; text-transform: uppercase; }
