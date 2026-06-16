@@ -79,7 +79,7 @@ add_action( 'wp_enqueue_scripts', function () {
     // Google Fonts
     wp_enqueue_style(
         'tap-fonts',
-        'https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap',
+        'https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&family=Heebo:wght@400;500;700;800;900&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap',
         [], null
     );
     // Theme stylesheet (design system tokens + component CSS)

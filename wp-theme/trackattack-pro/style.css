@@ -432,3 +432,58 @@ footer { border-top: 4px solid var(--outline); padding: 50px var(--margin-deskto
 .tap-rtl-form .elementor-field-subgroup .elementor-field-option { display:flex; align-items:center; gap:14px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.06); }
 .tap-rtl-form .elementor-field-subgroup label { font-size:19px !important; color:var(--on-surface); cursor:pointer; }
 .tap-rtl-form .elementor-field-subgroup input[type=checkbox] { width:24px; height:24px; accent-color:var(--primary-container); flex:none; cursor:pointer; }
+
+/* ─── Velocity 01 CTA — Elementor Header Button ─── */
+@keyframes tap-sheen {
+  0%        { transform: translateX(-160%) skewX(-20deg); }
+  55%, 100% { transform: translateX(260%)  skewX(-20deg); }
+}
+
+.tap-eheader .elementor-button,
+.tap-eheader .elementor-button.elementor-size-sm,
+.tap-eheader .elementor-button.elementor-size-md,
+.tap-eheader .elementor-button.elementor-size-lg {
+  position: relative !important;
+  overflow: hidden !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 11px !important;
+  padding: 15px 32px !important;
+  border: none !important;
+  border-radius: 11px !important;
+  background: linear-gradient(135deg, #8B3FD4 0%, #6A1FB0 100%) !important;
+  color: #ffffff !important;
+  font-family: 'Heebo', sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 19px !important;
+  letter-spacing: 0 !important;
+  cursor: pointer !important;
+  box-shadow: 0 8px 26px -8px rgba(124,47,201,.7), inset 0 1px 0 rgba(255,255,255,.28) !important;
+  transition: transform .18s ease, box-shadow .18s ease !important;
+  text-decoration: none !important;
+}
+.tap-eheader .elementor-button::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; bottom: 0 !important;
+  width: 55% !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent) !important;
+  animation: tap-sheen 3.6s ease-in-out infinite !important;
+  pointer-events: none !important;
+}
+.tap-eheader .elementor-button::after {
+  content: '❮' !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  opacity: .85 !important;
+  position: relative !important;
+}
+.tap-eheader .elementor-button:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 16px 42px -8px rgba(157,78,221,.95), inset 0 1px 0 rgba(255,255,255,.35) !important;
+  background: linear-gradient(135deg, #9B4FE4 0%, #7A2FC0 100%) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tap-eheader .elementor-button::before { animation: none !important; }
+  .tap-eheader .elementor-button:hover   { transform: none !important; }
+}
