@@ -433,22 +433,35 @@ footer { border-top: 4px solid var(--outline); padding: 50px var(--margin-deskto
 .tap-rtl-form .elementor-field-subgroup label { font-size:19px !important; color:var(--on-surface); cursor:pointer; }
 .tap-rtl-form .elementor-field-subgroup input[type=checkbox] { width:24px; height:24px; accent-color:var(--primary-container); flex:none; cursor:pointer; }
 
-/* ─── Velocity 01 CTA — Elementor Header Button ─── */
+/* ─── Header: burger color ─── */
+.tap-eheader .elementor-menu-toggle svg,
+.tap-eheader .elementor-menu-toggle i { fill: #ffffff !important; color: #ffffff !important; }
+
+/* ─── Velocity 01 CTA — Global Button (.tap-cta-btn) + Header fallback ─── */
 @keyframes tap-sheen {
   0%        { transform: translateX(-160%) skewX(-20deg); }
   55%, 100% { transform: translateX(260%)  skewX(-20deg); }
 }
 
+.tap-cta-btn .elementor-button,
+.tap-cta-btn .elementor-button.elementor-size-sm,
+.tap-cta-btn .elementor-button.elementor-size-md,
+.tap-cta-btn .elementor-button.elementor-size-lg,
 .tap-eheader .elementor-button,
 .tap-eheader .elementor-button.elementor-size-sm,
 .tap-eheader .elementor-button.elementor-size-md,
 .tap-eheader .elementor-button.elementor-size-lg {
   position: relative !important;
   overflow: hidden !important;
-  display: inline-flex !important;
+  display: flex !important;
   align-items: center !important;
   gap: 11px !important;
-  padding: 15px 32px !important;
+  padding: 20px 40px !important;
+  width: 100% !important;
+  max-width: 450px !important;
+  margin: 0 auto !important;
+  height: 65px !important;
+  justify-content: center !important;
   border: none !important;
   border-radius: 11px !important;
   background: linear-gradient(135deg, #8B3FD4 0%, #6A1FB0 100%) !important;
@@ -462,6 +475,7 @@ footer { border-top: 4px solid var(--outline); padding: 50px var(--margin-deskto
   transition: transform .18s ease, box-shadow .18s ease !important;
   text-decoration: none !important;
 }
+.tap-cta-btn .elementor-button::before,
 .tap-eheader .elementor-button::before {
   content: '' !important;
   position: absolute !important;
@@ -471,6 +485,7 @@ footer { border-top: 4px solid var(--outline); padding: 50px var(--margin-deskto
   animation: tap-sheen 3.6s ease-in-out infinite !important;
   pointer-events: none !important;
 }
+.tap-cta-btn .elementor-button::after,
 .tap-eheader .elementor-button::after {
   content: '❮' !important;
   font-size: 14px !important;
@@ -478,12 +493,41 @@ footer { border-top: 4px solid var(--outline); padding: 50px var(--margin-deskto
   opacity: .85 !important;
   position: relative !important;
 }
+.tap-cta-btn .elementor-button:hover,
 .tap-eheader .elementor-button:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 16px 42px -8px rgba(157,78,221,.95), inset 0 1px 0 rgba(255,255,255,.35) !important;
   background: linear-gradient(135deg, #9B4FE4 0%, #7A2FC0 100%) !important;
 }
 @media (prefers-reduced-motion: reduce) {
+  .tap-cta-btn .elementor-button::before,
   .tap-eheader .elementor-button::before { animation: none !important; }
+  .tap-cta-btn .elementor-button:hover,
   .tap-eheader .elementor-button:hover   { transform: none !important; }
+}
+@media (max-width: 1200px) {
+  .tap-cta-btn .elementor-button,
+  .tap-cta-btn .elementor-button.elementor-size-sm,
+  .tap-cta-btn .elementor-button.elementor-size-md,
+  .tap-cta-btn .elementor-button.elementor-size-lg,
+  .tap-eheader .elementor-button,
+  .tap-eheader .elementor-button.elementor-size-sm,
+  .tap-eheader .elementor-button.elementor-size-md,
+  .tap-eheader .elementor-button.elementor-size-lg {
+    padding: 16px 80px !important;
+    font-size: 17px !important;
+  }
+}
+@media (max-width: 768px) {
+  .tap-cta-btn .elementor-button,
+  .tap-cta-btn .elementor-button.elementor-size-sm,
+  .tap-cta-btn .elementor-button.elementor-size-md,
+  .tap-cta-btn .elementor-button.elementor-size-lg,
+  .tap-eheader .elementor-button,
+  .tap-eheader .elementor-button.elementor-size-sm,
+  .tap-eheader .elementor-button.elementor-size-md,
+  .tap-eheader .elementor-button.elementor-size-lg {
+    padding: 12px 32px !important;
+    font-size: 15px !important;
+  }
 }
