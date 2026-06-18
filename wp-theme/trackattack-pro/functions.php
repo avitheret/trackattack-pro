@@ -166,7 +166,7 @@ add_action( 'elementor_pro/forms/new_record', function ( $record, $handler ) {
     $prices = require get_template_directory() . '/inc/launch-prices.php'; // size => early-bird price (ex-VAT)
 
     $selected = preg_split( '/\s*[,\n]\s*/', (string) $sizes, -1, PREG_SPLIT_NO_EMPTY );
-    $lines = [];
+    $price_rows = '';
     foreach ( $selected as $s ) {
         $s = trim( $s );
         if ( $s === '' ) continue;
@@ -174,29 +174,89 @@ add_action( 'elementor_pro/forms/new_record', function ( $record, $handler ) {
         if ( $p !== null ) {
             $ex_vat  = number_format( $p );
             $inc_vat = number_format( $p * 1.18 );
-            $lines[] = "מידת הצמיג: {$s}\nמחיר מכירה מוקדמת: ₪{$ex_vat} לצמיג ללא מע\"מ (₪{$inc_vat} לצמיג כולל מע\"מ)";
+            $price_rows .= "
+            <tr>
+                <td style='padding:8px 0;border-bottom:1px solid #333;'>מידת הצמיג: <strong>{$s}</strong></td>
+            </tr>
+            <tr>
+                <td style='padding:4px 0 16px;border-bottom:1px solid #222;color:#c084fc;'>
+                    מחיר מכירה מוקדמת: <strong>&#x20AA;{$ex_vat}</strong> לצמיג ללא מע&quot;מ
+                    &nbsp;(<strong>&#x20AA;{$inc_vat}</strong> לצמיג כולל מע&quot;מ)
+                </td>
+            </tr>";
         } else {
-            $lines[] = "מידת הצמיג: {$s}\nמחיר מכירה מוקדמת: TBC";
+            $price_rows .= "
+            <tr><td style='padding:8px 0;'>מידת הצמיג: <strong>{$s}</strong> — מחיר: TBC</td></tr>";
         }
     }
-    $price_block = $lines ? implode( "\n\n", $lines ) : '—';
 
-    $body  = "שלום {$name},\n\n";
-    $body .= "כיף לראות שגם אתה מחכה ל-TrackAttack Pro כמונו.\n\n";
-    $body .= "השקענו המון כדי להביא צמיג שמספק את השילוב המושלם בין פידבק מטורף מההגה לבין אחיזה קשוחה ופנומנלית בפניות ובכלל – בדיוק מה שצריך כדי לגרד לפחות עוד כמה עשיריות שנייה מהלפ-טיים שלך.\n\n";
-    $body .= "כמי שנרשם בדף הנחיתה, מגיע לך ליהנות ממחיר של \"הראשונים על המסלול\". הנה ההצעה שלך:\n\n";
-    $body .= $price_block . "\n\n";
-    $body .= "האותיות הקטנות (והטובות): ההטבה הזו ניתנת אך ורק למזמינים מראש לפני הגעת המשלוח הרשמי והמלאי להטבה הזו מוגבל בהחלט.\n\n";
-    $body .= "ממש חבל לפספס את המחיר הזה ואז לרכוש במחיר מלא....\n\n";
-    $body .= "רוצה לשריין את הסט שלך? השב למייל זה עם המילה \"מעוניין\" או שלח לנו הודעה ישירה לוואטסאפ כאן: [קישור לוואטסאפ]\n\n";
-    $body .= "נתראה על האספלט\n\n";
-    $body .= "צוות PitStop / TrackAttack Pro";
+    $name_esc = esc_html( $name );
+    $body = <<<HTML
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#0e0e0e;font-family:Arial,Helvetica,sans-serif;direction:rtl;text-align:right;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0e0e0e;">
+<tr><td align="center" style="padding:32px 16px;">
+<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;background:#131313;border-radius:12px;overflow:hidden;border:1px solid #5d3f3e;">
+
+  <!-- Header bar -->
+  <tr><td style="background:linear-gradient(135deg,#8B3FD4,#6A1FB0);padding:20px 32px;">
+    <p style="margin:0;color:#fff;font-size:22px;font-weight:bold;letter-spacing:1px;">TrackAttack Pro</p>
+    <p style="margin:4px 0 0;color:rgba(255,255,255,.75);font-size:13px;">מחיר מוקדם — הראשונים על המסלול</p>
+  </td></tr>
+
+  <!-- Body -->
+  <tr><td style="padding:32px;color:#e5e2e1;font-size:16px;line-height:1.8;">
+
+    <p style="margin:0 0 20px;">שלום <strong>{$name_esc}</strong>,</p>
+
+    <p style="margin:0 0 20px;">כיף לראות שגם אתה מחכה ל-TrackAttack Pro כמונו.</p>
+
+    <p style="margin:0 0 20px;">השקענו המון כדי להביא צמיג שמספק את השילוב המושלם בין פידבק מטורף מההגה לבין אחיזה קשוחה ופנומנלית בפניות ובכלל – בדיוק מה שצריך כדי לגרד לפחות עוד כמה עשיריות שנייה מהלפ-טיים שלך.</p>
+
+    <p style="margin:0 0 24px;">כמי שנרשם בדף הנחיתה, מגיע לך ליהנות ממחיר של &#x201C;הראשונים על המסלול&#x201D;. הנה ההצעה שלך:</p>
+
+    <!-- Price table -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:#1c1b1b;border-radius:8px;border:1px solid #3a3939;margin-bottom:28px;">
+    <tr><td style="padding:16px 20px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="direction:rtl;text-align:right;">
+        {$price_rows}
+      </table>
+    </td></tr>
+    </table>
+
+    <p style="margin:0 0 20px;font-size:13px;color:#9e9e9e;border-right:3px solid #8B3FD4;padding-right:12px;">
+      <strong>האותיות הקטנות (והטובות):</strong> ההטבה הזו ניתנת אך ורק למזמינים מראש לפני הגעת המשלוח הרשמי והמלאי להטבה הזו מוגבל בהחלט.
+    </p>
+
+    <p style="margin:0 0 28px;">ממש חבל לפספס את המחיר הזה ואז לרכוש במחיר מלא....</p>
+
+    <p style="margin:0 0 8px;font-weight:bold;">רוצה לשריין את הסט שלך?</p>
+    <p style="margin:0 0 32px;">השב למייל זה עם המילה &#x201C;מעוניין&#x201D; או שלח לנו הודעה ישירה לוואטסאפ כאן: <a href="[קישור לוואטסאפ]" style="color:#c084fc;">[וואטסאפ]</a></p>
+
+    <p style="margin:0 0 4px;">נתראה על האספלט,</p>
+    <p style="margin:0;color:#c084fc;font-weight:bold;">צוות PitStop / TrackAttack Pro</p>
+
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="padding:16px 32px;background:#0e0e0e;text-align:center;font-size:11px;color:#555;">
+    TrackAttack Pro &nbsp;|&nbsp; USDOT Street Legal
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>
+HTML;
 
     wp_mail(
         $email,
         'TrackAttack Pro — מחיר מוקדם עבורך',
         $body,
-        [ 'Content-Type: text/plain; charset=UTF-8' ]
+        [ 'Content-Type: text/html; charset=UTF-8' ]
     );
 }, 10, 2 );
 
