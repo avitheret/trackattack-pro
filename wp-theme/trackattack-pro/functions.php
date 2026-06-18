@@ -151,55 +151,7 @@ function tap_contact_handler(): void {
         : wp_send_json_error( 'שגיאה בשליחת הטופס.' );
 }
 
-/* ─── Auto-reply to Elementor Pro form submitter (with early-bird prices) ─── */
-add_action( 'elementor_pro/forms/new_record', function ( $record, $handler ) {
-    // Only our contact form
-    $form_name = $record->get_form_settings( 'form_name' );
-    if ( $form_name !== 'TrackAttack Pro — צור קשר' ) return;
-
-    $fields = $record->get( 'fields' );
-    $name   = trim( $fields['name']['value']  ?? '' );
-    $email  = trim( $fields['email']['value'] ?? '' );
-    $sizes  = $fields['tire_sizes']['value']  ?? '';   // checkbox: comma/newline separated
-    if ( ! is_email( $email ) ) return;
-
-    $prices = require get_template_directory() . '/inc/launch-prices.php'; // size => early-bird price (ex-VAT)
-
-    $selected = preg_split( '/\s*[,\n]\s*/', (string) $sizes, -1, PREG_SPLIT_NO_EMPTY );
-    $price_rows = '';
-    foreach ( $selected as $s ) {
-        $s = trim( $s );
-        if ( $s === '' ) continue;
-        $p = $prices[ $s ] ?? null;
-        if ( $p !== null ) {
-            $ex_vat  = number_format( $p );
-            $inc_vat = number_format( $p * 1.18 );
-            $price_rows .= "
-            <tr>
-                <td style='padding:8px 0;border-bottom:1px solid #333;'>מידת הצמיג: <strong>{$s}</strong></td>
-            </tr>
-            <tr>
-                <td style='padding:4px 0 16px;border-bottom:1px solid #222;color:#c084fc;'>
-                    מחיר מכירה מוקדמת: <strong>&#x20AA;{$ex_vat}</strong> לצמיג ללא מע&quot;מ
-                    &nbsp;(<strong>&#x20AA;{$inc_vat}</strong> לצמיג כולל מע&quot;מ)
-                </td>
-            </tr>";
-        } else {
-            $price_rows .= "
-            <tr><td style='padding:8px 0;'>מידת הצמיג: <strong>{$s}</strong> — מחיר: TBC</td></tr>";
-        }
-    }
-
-    $name_esc = esc_html( $name );
-    $body = require get_template_directory() . '/inc/email-autoreply.php';
-
-    wp_mail(
-        $email,
-        'TrackAttack Pro — מחיר מוקדם עבורך',
-        $body,
-        [ 'Content-Type: text/html; charset=UTF-8' ]
-    );
-}, 10, 2 );
+/* Auto-reply hook moved to wp-content/mu-plugins/tap-autoreply.php */
 
 /* ─── Admin hint: where to edit ─── */
 add_action( 'admin_notices', function () {
