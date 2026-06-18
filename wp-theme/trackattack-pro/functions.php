@@ -163,7 +163,7 @@ add_action( 'elementor_pro/forms/new_record', function ( $record, $handler ) {
     $sizes  = $fields['tire_sizes']['value']  ?? '';   // checkbox: comma/newline separated
     if ( ! is_email( $email ) ) return;
 
-    $prices = require get_template_directory() . '/inc/launch-prices.php'; // size => early-bird price
+    $prices = require get_template_directory() . '/inc/launch-prices.php'; // size => early-bird price (ex-VAT)
 
     $selected = preg_split( '/\s*[,\n]\s*/', (string) $sizes, -1, PREG_SPLIT_NO_EMPTY );
     $lines = [];
@@ -171,18 +171,30 @@ add_action( 'elementor_pro/forms/new_record', function ( $record, $handler ) {
         $s = trim( $s );
         if ( $s === '' ) continue;
         $p = $prices[ $s ] ?? null;
-        $lines[] = $p !== null ? "{$s} — ₪" . number_format( $p ) : "{$s} — TBC";
+        if ( $p !== null ) {
+            $ex_vat  = number_format( $p );
+            $inc_vat = number_format( $p * 1.18 );
+            $lines[] = "מידת הצמיג: {$s}\nמחיר מכירה מוקדמת: ₪{$ex_vat} לצמיג ללא מע\"מ (₪{$inc_vat} לצמיג כולל מע\"מ)";
+        } else {
+            $lines[] = "מידת הצמיג: {$s}\nמחיר מכירה מוקדמת: TBC";
+        }
     }
-    $price_block = $lines ? implode( "\n", $lines ) : '—';
+    $price_block = $lines ? implode( "\n\n", $lines ) : '—';
 
-    $body  = "Dear {$name},\n\n";
-    $body .= "Thank you for contacting us. The prices for the tyres you are interested in are:\n\n";
-    $body .= "For early birds:\n{$price_block}\n\n";
-    $body .= "Regards,\nPitStop";
+    $body  = "שלום {$name},\n\n";
+    $body .= "כיף לראות שגם אתה מחכה ל-TrackAttack Pro כמונו.\n\n";
+    $body .= "השקענו המון כדי להביא צמיג שמספק את השילוב המושלם בין פידבק מטורף מההגה לבין אחיזה קשוחה ופנומנלית בפניות ובכלל – בדיוק מה שצריך כדי לגרד לפחות עוד כמה עשיריות שנייה מהלפ-טיים שלך.\n\n";
+    $body .= "כמי שנרשם בדף הנחיתה, מגיע לך ליהנות ממחיר של \"הראשונים על המסלול\". הנה ההצעה שלך:\n\n";
+    $body .= $price_block . "\n\n";
+    $body .= "האותיות הקטנות (והטובות): ההטבה הזו ניתנת אך ורק למזמינים מראש לפני הגעת המשלוח הרשמי והמלאי להטבה הזו מוגבל בהחלט.\n\n";
+    $body .= "ממש חבל לפספס את המחיר הזה ואז לרכוש במחיר מלא....\n\n";
+    $body .= "רוצה לשריין את הסט שלך? השב למייל זה עם המילה \"מעוניין\" או שלח לנו הודעה ישירה לוואטסאפ כאן: [קישור לוואטסאפ]\n\n";
+    $body .= "נתראה על האספלט\n\n";
+    $body .= "צוות PitStop / TrackAttack Pro";
 
     wp_mail(
         $email,
-        'PitStop — Your Tyre Prices',
+        'TrackAttack Pro — מחיר מוקדם עבורך',
         $body,
         [ 'Content-Type: text/plain; charset=UTF-8' ]
     );
